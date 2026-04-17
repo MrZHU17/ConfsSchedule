@@ -1,0 +1,83 @@
+{
+  "updated_at": "2026-04-17T00:00:00Z",
+  "conferences": [
+    {
+      "abbr": "INFOCOM 2026",
+      "full": "IEEE International Conference on Computer Communications 2026",
+      "url": "https://infocom2026.ieee-infocom.org/",
+      "area": "Networking",
+      "location": "London, UK",
+      "confDate": "2026-05-18",
+      "confDateEnd": "2026-05-21",
+      "deadline": "2025-07-24",
+      "notification": "2025-12-01",
+      "source": "https://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=185432",
+      "fetched_at": "2026-04-17T00:00:00Z"
+    },
+    {
+      "abbr": "GLOBECOM 2026",
+      "full": "IEEE Global Communications Conference 2026",
+      "url": "https://globecom2026.ieee-globecom.org/",
+      "area": "Communications",
+      "location": "Cape Town, South Africa",
+      "confDate": "2026-12-07",
+      "confDateEnd": "2026-12-11",
+      "deadline": "2026-05-15",
+      "notification": "2026-09-01",
+      "source": null,
+      "fetched_at": "2026-04-17T00:00:00Z"
+    },
+    {
+      "abbr": "VTC 2026-Fall",
+      "full": "IEEE Vehicular Technology Conference 2026 Fall",
+      "url": "https://events.vtsociety.org/vtc2026-fall/",
+      "area": "V2X / 5G",
+      "location": "Tokyo, Japan",
+      "confDate": "2026-10-05",
+      "confDateEnd": "2026-10-08",
+      "deadline": "2026-05-01",
+      "notification": "2026-07-15",
+      "source": null,
+      "fetched_at": "2026-04-17T00:00:00Z"
+    },
+    {
+      "abbr": "ICC 2027",
+      "full": "IEEE International Conference on Communications 2027",
+      "url": "https://icc2027.ieee-icc.org/",
+      "area": "Communications",
+      "location": "Montreal, Canada",
+      "confDate": "2027-06-01",
+      "confDateEnd": "2027-06-05",
+      "deadline": "2026-10-01",
+      "notification": "2027-01-15",
+      "source": null,
+      "fetched_at": "2026-04-17T00:00:00Z"
+    },
+    {
+      "abbr": "WCNC 2026",
+      "full": "IEEE Wireless Communications and Networking Conference 2026",
+      "url": "https://wcnc2026.ieee-wcnc.org/",
+      "area": "Wireless",
+      "location": "Milan, Italy",
+      "confDate": "2026-03-24",
+      "confDateEnd": "2026-03-27",
+      "deadline": "2025-09-15",
+      "notification": "2025-12-20",
+      "source": null,
+      "fetched_at": "2026-04-17T00:00:00Z"
+    },
+    {
+      "abbr": "MobiCom 2026",
+      "full": "ACM Annual International Conference on Mobile Computing and Networking",
+      "url": "https://www.sigmobile.org/mobicom/2026/",
+      "area": "Wireless",
+      "location": "Washington D.C., USA",
+      "confDate": "2026-10-12",
+      "confDateEnd": "2026-10-16",
+      "deadline": "2026-03-15",
+      "notification": "2026-06-30",
+      "source": null,
+      "fetched_at": "2026-04-17T00:00:00Z"
+    }
+  ]
+}
