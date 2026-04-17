@@ -1,70 +1,75 @@
 {
-  "updated_at": "2026-04-17T08:09:01.687850Z",
+  "updated_at": "2026-04-17T08:18:59.333270Z",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
       "full": "IEEE Global Communications Conference",
       "url": "https://globecom2026.ieee-globecom.org/",
       "area": "Communications",
-      "location": "Cape Town, South Africa",
+      "location": "TBD",
       "confDate": "2026-12-07",
       "confDateEnd": "2026-12-11",
       "deadline": "2026-05-11",
       "notification": "2026-08-22",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:31.943950Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:28.953594Z"
     },
     {
       "abbr": "IEEE WCNC",
       "full": "IEEE Wireless Communications and Networking Conference",
       "url": "https://wcnc2026.ieee-wcnc.org/",
       "area": "Wireless",
-      "location": "Milan, Italy",
+      "location": "TBD",
       "confDate": "2026-03-24",
       "confDateEnd": "2026-03-27",
       "deadline": "2025-09-15",
       "notification": "2025-12-20",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:33.493697Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:30.712034Z"
     },
     {
       "abbr": "IEEE ICC",
       "full": "IEEE International Conference on Communications",
       "url": "https://icc2026.ieee-icc.org/",
       "area": "Communications",
-      "location": "Glasgow, UK",
+      "location": "TBD",
       "confDate": "2026-06-01",
       "confDateEnd": "2026-06-05",
       "deadline": "2025-10-15",
       "notification": "2026-01-20",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:35.036923Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:32.301806Z"
     },
     {
       "abbr": "IEEE INFOCOM",
       "full": "IEEE International Conference on Computer Communications",
       "url": "https://infocom2026.ieee-infocom.org/",
       "area": "Networking",
-      "location": "London, UK",
+      "location": "TBD",
       "confDate": "2026-05-18",
       "confDateEnd": "2026-05-21",
       "deadline": "2025-07-24",
       "notification": "2025-12-01",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:36.604357Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:33.906321Z"
     },
     {
       "abbr": "IEEE VTC",
       "full": "IEEE Vehicular Technology Conference",
       "url": "https://events.vtsociety.org/",
       "area": "V2X / 5G",
-      "location": "Tokyo, Japan",
+      "location": "TBD",
       "confDate": "2026-10-05",
       "confDateEnd": "2026-10-08",
       "deadline": "2026-05-01",
       "notification": "2026-07-15",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:38.142873Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:35.555644Z"
     },
     {
       "abbr": "IEEE PIMRC",
@@ -77,7 +82,8 @@
       "deadline": "2026-04-15",
       "notification": "2026-06-30",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:39.688135Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:37.130725Z"
     },
     {
       "abbr": "IEEE IV",
@@ -90,12 +96,13 @@
       "deadline": "2026-02-28",
       "notification": "2026-04-30",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:41.252359Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:38.717708Z"
     },
     {
       "abbr": "IEEE VNC",
       "full": "IEEE Vehicular Networking Conference",
-      "url": "https://www.ieeevnc.org/",
+      "url": "https://ieee-vnc.org/2026/",
       "area": "V2X / Networking",
       "location": "TBD",
       "confDate": "2026-11-01",
@@ -103,12 +110,13 @@
       "deadline": "2026-07-01",
       "notification": "2026-09-01",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:42.887220Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:40.280837Z"
     },
     {
       "abbr": "IEEE ITSC",
       "full": "IEEE Int. Conference on Intelligent Transportation Systems",
-      "url": "https://ieee-itsc.org/",
+      "url": "https://ieee-itsc.org/2026/",
       "area": "ITS",
       "location": "TBD",
       "confDate": "2026-09-20",
@@ -116,12 +124,13 @@
       "deadline": "2026-03-31",
       "notification": "2026-06-15",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:44.462050Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:41.928081Z"
     },
     {
       "abbr": "ITS World Congress",
       "full": "ITS World Congress",
-      "url": "https://www.itsworldcongress.org/",
+      "url": "https://www.itsworldcongress.com/",
       "area": "ITS",
       "location": "TBD",
       "confDate": null,
@@ -129,25 +138,27 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:46.016282Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:43.503759Z"
     },
     {
       "abbr": "IEEE GCCE",
       "full": "IEEE Global Conference on Consumer Electronics",
-      "url": "https://www.ieee-gcce.org/",
+      "url": "https://www.ieee-gcce.org/2026/",
       "area": "Consumer Electronics",
-      "location": "Osaka, Japan",
+      "location": "TBD",
       "confDate": "2026-10-20",
       "confDateEnd": "2026-10-23",
       "deadline": "2026-06-01",
       "notification": "2026-08-01",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:47.548538Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:45.065901Z"
     },
     {
       "abbr": "IEEE WFIoT",
       "full": "IEEE World Forum on Internet of Things",
-      "url": "https://wfiot2025.iot.ieee.org/",
+      "url": "https://wfiot2026.iot.ieee.org/",
       "area": "IoT",
       "location": "TBD",
       "confDate": null,
@@ -155,25 +166,27 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:49.089934Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:46.640686Z"
     },
     {
       "abbr": "IEEE CCNC",
       "full": "IEEE Consumer Communications and Networking Conference",
-      "url": "https://ccnc2026.ieee-ccnc.org/",
+      "url": "https://ccnc2027.ieee-ccnc.org/",
       "area": "Consumer / Networking",
-      "location": "Las Vegas, USA",
+      "location": "TBD",
       "confDate": "2027-01-10",
       "confDateEnd": "2027-01-13",
       "deadline": "2026-07-15",
       "notification": "2026-10-01",
       "source": null,
-      "fetched_at": "2026-04-17T08:08:50.743687Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:48.211652Z"
     },
     {
       "abbr": "IEEE CTW",
       "full": "IEEE Communication Theory Workshop",
-      "url": "https://ctw2025.ieee-ctw.org/",
+      "url": "https://ctw2026.ieee-ctw.org/",
       "area": "Theory",
       "location": "TBD",
       "confDate": null,
@@ -181,12 +194,13 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:52.270674Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:49.749568Z"
     },
     {
       "abbr": "APCC",
       "full": "Asia-Pacific Conference on Communications",
-      "url": "https://apcc2025.org/",
+      "url": "https://apcc2026.org/",
       "area": "Asia-Pacific",
       "location": "TBD",
       "confDate": null,
@@ -194,7 +208,8 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:53.880329Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:51.312677Z"
     },
     {
       "abbr": "ICOIN",
@@ -207,7 +222,8 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:55.493974Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:52.970822Z"
     },
     {
       "abbr": "WPMC",
@@ -220,11 +236,12 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:57.118772Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:54.626811Z"
     },
     {
       "abbr": "ICETC",
-      "full": "International Conference on Emerging Technologies for Communications",
+      "full": "Int. Conference on Emerging Technologies for Communications",
       "url": "https://www.ieice.org/cs/icetc/",
       "area": "Emerging Tech",
       "location": "TBD",
@@ -233,20 +250,22 @@
       "deadline": null,
       "notification": null,
       "source": null,
-      "fetched_at": "2026-04-17T08:08:58.656314Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:56.186917Z"
     },
     {
       "abbr": "ICNC",
-      "full": "International Conference on Computing, Networking and Communications",
+      "full": "Int. Conference on Computing, Networking and Communications",
       "url": "https://www.conf-icnc.org/",
       "area": "Networking",
-      "location": "Hawaii, USA",
+      "location": "TBD",
       "confDate": "2027-02-17",
       "confDateEnd": "2027-02-20",
       "deadline": "2026-08-01",
       "notification": "2026-10-15",
       "source": null,
-      "fetched_at": "2026-04-17T08:09:00.187690Z"
+      "data_source": "fallback",
+      "fetched_at": "2026-04-17T08:18:57.833052Z"
     }
   ]
 }
