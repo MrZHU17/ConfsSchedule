@@ -11,6 +11,11 @@ on:
   # GitHub の Actions タブから手動でも実行可能
   workflow_dispatch:
 
+  # スクレイパー本体を変更したときも即時実行
+  push:
+    paths:
+      - 'scripts/scraper.py'
+
 # ─────────────────────────────────────────────
 # ジョブ定義
 # ─────────────────────────────────────────────
@@ -32,14 +37,18 @@ jobs:
           python-version: '3.11'
 
       # 3. 依存ライブラリをインストール
-      - name: Install dependencies
-        run: pip install requests beautifulsoup4
+      - name: Install Python dependencies
+        run: pip install requests beautifulsoup4 playwright lxml
 
-      # 4. スクレイパーを実行
+      # 4. Playwright ブラウザをインストール（JS レンダリングが必要なサイト向け）
+      - name: Install Playwright browsers
+        run: playwright install chromium --with-deps
+
+      # 5. スクレイパーを実行
       - name: Run scraper
         run: python scripts/scraper.py
 
-      # 5. 変更があれば commit して push
+      # 6. 変更があれば commit して push
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
