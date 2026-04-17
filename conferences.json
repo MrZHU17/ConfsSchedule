@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-17T14:20:19.823805Z",
+  "updated_at": "2026-04-17T14:30:33.261892Z",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
@@ -11,9 +11,9 @@
       "confDateEnd": "2026-12-11",
       "deadline": null,
       "notification": null,
-      "source": "nagoya",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.823905Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-17T14:28:24.476806Z"
     },
     {
       "abbr": "IEEE WCNC",
@@ -25,9 +25,9 @@
       "confDateEnd": "2026-04-16",
       "deadline": "2025-09-14",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.823975Z"
+      "fetched_at": "2026-04-17T14:28:47.381008Z"
     },
     {
       "abbr": "IEEE ICC",
@@ -39,9 +39,9 @@
       "confDateEnd": "2026-05-28",
       "deadline": "2025-11-10",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824037Z"
+      "fetched_at": "2026-04-17T14:28:47.382546Z"
     },
     {
       "abbr": "IEEE INFOCOM",
@@ -53,9 +53,9 @@
       "confDateEnd": "2026-05-21",
       "deadline": "2025-07-24",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824132Z"
+      "fetched_at": "2026-04-17T14:28:47.383956Z"
     },
     {
       "abbr": "IEEE VTC",
@@ -67,9 +67,9 @@
       "confDateEnd": "2026-09-09",
       "deadline": "2026-02-14",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824209Z"
+      "fetched_at": "2026-04-17T14:28:47.384938Z"
     },
     {
       "abbr": "IEEE PIMRC",
@@ -81,9 +81,9 @@
       "confDateEnd": "2026-09-04",
       "deadline": "2026-03-16",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824280Z"
+      "fetched_at": "2026-04-17T14:28:47.386094Z"
     },
     {
       "abbr": "IEEE IV",
@@ -95,9 +95,9 @@
       "confDateEnd": "2026-06-25",
       "deadline": "2025-11-15",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824360Z"
+      "fetched_at": "2026-04-17T14:28:47.387092Z"
     },
     {
       "abbr": "IEEE VNC",
@@ -109,14 +109,14 @@
       "confDateEnd": "2026-06-10",
       "deadline": "2026-01-16",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824420Z"
+      "fetched_at": "2026-04-17T14:28:47.388121Z"
     },
     {
       "abbr": "IEEE ITSC",
       "full": "IEEE Int. Conference on Intelligent Transportation Systems",
-      "url": "https://ieee-itsc.org/2026/",
+      "url": "https://ieee-itsc.org/2026",
       "area": "ITS",
       "location": "TBD",
       "confDate": null,
@@ -125,7 +125,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:20:19.824481Z"
+      "fetched_at": "2026-04-17T14:28:47.389766Z"
     },
     {
       "abbr": "ITS World Congress",
@@ -137,9 +137,9 @@
       "confDateEnd": "2026-10-23",
       "deadline": "2026-01-31",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824545Z"
+      "fetched_at": "2026-04-17T14:29:35.145708Z"
     },
     {
       "abbr": "IEEE GCCE",
@@ -151,9 +151,9 @@
       "confDateEnd": "2026-10-29",
       "deadline": "2026-05-11",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824614Z"
+      "fetched_at": "2026-04-17T14:29:35.147061Z"
     },
     {
       "abbr": "IEEE WFIoT",
@@ -167,7 +167,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:20:19.824690Z"
+      "fetched_at": "2026-04-17T14:29:35.148318Z"
     },
     {
       "abbr": "IEEE CCNC",
@@ -179,28 +179,28 @@
       "confDateEnd": "2026-01-12",
       "deadline": "2025-07-01",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824755Z"
+      "fetched_at": "2026-04-17T14:29:51.756708Z"
     },
     {
       "abbr": "IEEE CTW",
       "full": "IEEE Communication Theory Workshop",
       "url": "https://www.comsoc.org/conferences-events/ieee-communication-theory-workshop-2026",
       "area": "Theory",
-      "location": "São Miguel Azores, Portugal",
+      "location": "São Miguel Azores Portugal",
       "confDate": "2026-05-17",
       "confDateEnd": "2026-05-20",
       "deadline": "2026-01-09",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824817Z"
+      "fetched_at": "2026-04-17T14:29:51.758215Z"
     },
     {
       "abbr": "APCC",
       "full": "Asia-Pacific Conference on Communications",
-      "url": "https://www.ieice.org/cs/apcc/",
+      "url": "https://apcc2026.org",
       "area": "Asia-Pacific",
       "location": "TBD",
       "confDate": null,
@@ -209,7 +209,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:20:19.824876Z"
+      "fetched_at": "2026-04-17T14:29:51.759939Z"
     },
     {
       "abbr": "ICOIN",
@@ -221,9 +221,9 @@
       "confDateEnd": "2026-01-16",
       "deadline": "2025-10-24",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.824942Z"
+      "fetched_at": "2026-04-17T14:30:15.140713Z"
     },
     {
       "abbr": "WPMC",
@@ -237,7 +237,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:20:19.825009Z"
+      "fetched_at": "2026-04-17T14:30:15.142696Z"
     },
     {
       "abbr": "ICETC",
@@ -249,9 +249,9 @@
       "confDateEnd": "2026-11-25",
       "deadline": null,
       "notification": null,
-      "source": "nagoya",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.825096Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-17T14:30:19.049820Z"
     },
     {
       "abbr": "ICNC",
@@ -263,9 +263,9 @@
       "confDateEnd": "2026-02-19",
       "deadline": "2025-08-05",
       "notification": null,
-      "source": "nagoya",
+      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
       "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:20:19.825176Z"
+      "fetched_at": "2026-04-17T14:30:33.260051Z"
     }
   ]
 }
