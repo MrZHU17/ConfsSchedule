@@ -1,0 +1,53 @@
+name: Update Conference Data
+
+# ─────────────────────────────────────────────
+# トリガー設定
+# ─────────────────────────────────────────────
+on:
+  # 毎週月曜日 UTC 00:00（日本時間 09:00）に自動実行
+  schedule:
+    - cron: '0 0 * * 1'
+
+  # GitHub の Actions タブから手動でも実行可能
+  workflow_dispatch:
+
+# ─────────────────────────────────────────────
+# ジョブ定義
+# ─────────────────────────────────────────────
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # conferences.json を commit・push するために必要
+
+    steps:
+      # 1. リポジトリをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Python セットアップ
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      # 3. 依存ライブラリをインストール
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      # 4. スクレイパーを実行
+      - name: Run scraper
+        run: python scripts/scraper.py
+
+      # 5. 変更があれば commit して push
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add conferences.json
+          # 変更がある場合のみ commit（差分なしの場合は終了コード 1 を無視）
+          git diff --cached --quiet || git commit -m "chore: update conferences.json [$(date -u '+%Y-%m-%d')]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
