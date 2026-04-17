@@ -1,17 +1,18 @@
 """
-Conference Tracker Scraper  v4
+Conference Tracker Scraper  v5
 ==============================
-Playwright（ヘッドレスブラウザ）で公式サイトの authors ページを取得し、
-主会議（Symposium/Technical Papers）の締切日だけを抽出する。
+取得戦略（優先順位）:
+  1. requests + BeautifulSoup でHTMLテーブル・リスト構造をパース（高速・構造保持）
+  2. Playwright（ヘッドレス）で JS レンダリング後にHTMLを再パース
+  3. WikiCFP フォールバック
+  4. 既存 conferences.json で補完
 
-取得優先順位（フィールドごと）:
-  1. 公式サイト authors ページ（Playwright）
-  2. WikiCFP
-  3. 既存 conferences.json
+IEEEのauthorsページは通常 "Important Dates" テーブルまたはリストで
+締切日を列挙しているため、テキスト変換前のHTML構造から直接抽出する。
 
-主会議の識別ロジック:
-  ✅ "Call for Symposium Papers" / "Call for Technical Papers" / "Call for Papers"
-  ❌ Tutorial / Workshop / Industry / Panel / Demo / Poster は除外
+主会議の識別:
+  ✅ Call for Papers / Technical Papers / Symposium Papers
+  ❌ Workshop / Tutorial / Industry / Demo / Poster は除外
 """
 
 import json
@@ -20,6 +21,9 @@ import time
 import logging
 from datetime import datetime, date
 from pathlib import Path
+
+import requests
+from bs4 import BeautifulSoup
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -30,6 +34,16 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+
 # ─────────────────────────────────────────────
 # 会議リスト
 # authors_paths: authors ページの候補パス（上から順に試行）
@@ -39,210 +53,200 @@ TARGET_CONFERENCES = [
         "abbr": "IEEE GLOBECOM",
         "full": "IEEE Global Communications Conference",
         "base_url": "https://globecom2026.ieee-globecom.org",
-        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Communications",
-        "wikicfp_search": "globecom",
+        "wikicfp_search": "globecom 2026",
     },
     {
         "abbr": "IEEE WCNC",
         "full": "IEEE Wireless Communications and Networking Conference",
         "base_url": "https://wcnc2026.ieee-wcnc.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Wireless",
-        "wikicfp_search": "wcnc",
+        "wikicfp_search": "wcnc 2026",
     },
     {
         "abbr": "IEEE ICC",
         "full": "IEEE International Conference on Communications",
         "base_url": "https://icc2026.ieee-icc.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Communications",
-        "wikicfp_search": "icc",
+        "wikicfp_search": "icc 2026",
     },
     {
         "abbr": "IEEE INFOCOM",
         "full": "IEEE International Conference on Computer Communications",
         "base_url": "https://infocom2026.ieee-infocom.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Networking",
-        "wikicfp_search": "infocom",
+        "wikicfp_search": "infocom 2026",
     },
     {
         "abbr": "IEEE VTC",
         "full": "IEEE Vehicular Technology Conference",
         "base_url": "https://events.vtsociety.org/vtc2026-fall",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "V2X / 5G",
-        "wikicfp_search": "vtc",
+        "wikicfp_search": "vtc 2026",
     },
     {
         "abbr": "IEEE PIMRC",
         "full": "IEEE Int. Symposium on Personal, Indoor and Mobile Radio Communications",
         "base_url": "https://pimrc2026.ieee-pimrc.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Wireless",
-        "wikicfp_search": "pimrc",
+        "wikicfp_search": "pimrc 2026",
     },
     {
         "abbr": "IEEE IV",
         "full": "IEEE Intelligent Vehicles Symposium",
         "base_url": "https://iv2026.ieee-iv.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "ITS / V2X",
-        "wikicfp_search": "intelligent vehicles",
+        "wikicfp_search": "intelligent vehicles symposium 2026",
     },
     {
         "abbr": "IEEE VNC",
         "full": "IEEE Vehicular Networking Conference",
         "base_url": "https://ieee-vnc.org/2026",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "V2X / Networking",
-        "wikicfp_search": "vehicular networking",
+        "wikicfp_search": "vehicular networking 2026",
     },
     {
         "abbr": "IEEE ITSC",
         "full": "IEEE Int. Conference on Intelligent Transportation Systems",
         "base_url": "https://ieee-itsc.org/2026",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "ITS",
-        "wikicfp_search": "itsc",
+        "wikicfp_search": "itsc 2026",
     },
     {
         "abbr": "ITS World Congress",
         "full": "ITS World Congress",
         "base_url": "https://www.itsworldcongress.com",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/call-for-papers", "/cfp", "/authors", "/"],
         "area": "ITS",
-        "wikicfp_search": "its world congress",
+        "wikicfp_search": "its world congress 2026",
     },
     {
         "abbr": "IEEE GCCE",
         "full": "IEEE Global Conference on Consumer Electronics",
         "base_url": "https://www.ieee-gcce.org/2026",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Consumer Electronics",
-        "wikicfp_search": "gcce",
+        "wikicfp_search": "gcce 2026",
     },
     {
         "abbr": "IEEE WFIoT",
         "full": "IEEE World Forum on Internet of Things",
         "base_url": "https://wfiot2026.iot.ieee.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "IoT",
-        "wikicfp_search": "wfiot",
+        "wikicfp_search": "wfiot 2026",
     },
     {
         "abbr": "IEEE CCNC",
         "full": "IEEE Consumer Communications and Networking Conference",
         "base_url": "https://ccnc2027.ieee-ccnc.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Consumer / Networking",
-        "wikicfp_search": "ccnc",
+        "wikicfp_search": "ccnc 2027",
     },
     {
         "abbr": "IEEE CTW",
         "full": "IEEE Communication Theory Workshop",
         "base_url": "https://ctw2026.ieee-ctw.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Theory",
-        "wikicfp_search": "communication theory workshop",
+        "wikicfp_search": "communication theory workshop 2026",
     },
     {
         "abbr": "APCC",
         "full": "Asia-Pacific Conference on Communications",
         "base_url": "https://apcc2026.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Asia-Pacific",
-        "wikicfp_search": "apcc",
+        "wikicfp_search": "apcc 2026",
     },
     {
         "abbr": "ICOIN",
         "full": "International Conference on Information Networking",
         "base_url": "https://www.icoin.org",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Networking",
-        "wikicfp_search": "icoin",
+        "wikicfp_search": "icoin 2026",
     },
     {
         "abbr": "WPMC",
         "full": "Int. Symposium on Wireless Personal Multimedia Communications",
         "base_url": "https://www.wpmc-conf.org/2026",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Wireless",
-        "wikicfp_search": "wpmc",
+        "wikicfp_search": "wpmc 2026",
     },
     {
         "abbr": "ICETC",
         "full": "Int. Conference on Emerging Technologies for Communications",
         "base_url": "https://www.ieice.org/cs/icetc/2026",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Emerging Tech",
-        "wikicfp_search": "icetc",
+        "wikicfp_search": "icetc 2026",
     },
     {
         "abbr": "ICNC",
         "full": "Int. Conference on Computing, Networking and Communications",
         "base_url": "https://www.conf-icnc.org/2027",
-        "authors_paths": ["/authors", "/call-for-papers", "/cfp", "/"],
+        "authors_paths": ["/authors", "/authors/", "/call-for-papers", "/cfp", "/"],
         "area": "Networking",
-        "wikicfp_search": "icnc",
+        "wikicfp_search": "icnc 2027",
     },
 ]
 
 # ─────────────────────────────────────────────
-# 主会議セクションの識別キーワード
+# 締切・通知日を示すキーワード
 # ─────────────────────────────────────────────
 
-# これらのキーワードを含むセクションが「主会議」
-MAIN_SECTION_KEYWORDS = [
-    "call for symposium papers",
-    "call for technical papers",
-    "call for regular papers",
-    "call for full papers",
-    "call for papers",
+DEADLINE_KEYWORDS = [
+    "paper submission deadline",
+    "deadline for paper submission",
+    "full paper submission",
+    "submission deadline",
     "paper submission",
-    "technical program",
-    "main track",
-    "conference papers",
+    "abstract submission",
+    "abstract deadline",
+    "manuscript due",
+    "paper due",
+    "submission due",
 ]
 
-# これらのキーワードを含むセクションは除外
-SKIP_SECTION_KEYWORDS = [
+NOTIFICATION_KEYWORDS = [
+    "notification of acceptance",
+    "acceptance notification",
+    "author notification",
+    "notification date",
+    "notification",
+]
+
+# これらのキーワードを含むセクション・行は主会議対象外
+SKIP_KEYWORDS = [
     "tutorial",
     "workshop",
-    "industry",
+    "industry forum",
     "panel",
     "demo",
+    "demonstration",
     "poster",
     "special session",
     "satellite",
-    "exhibit",
     "competition",
     "challenge",
-    "summary",
     "camera ready",
+    "camera-ready",
     "final paper",
     "registration",
-]
-
-# 締切日を示すキーワード
-DEADLINE_KEYWORDS = [
-    "deadline for paper submission",
-    "paper submission deadline",
-    "submission deadline",
-    "abstract deadline",
-    "abstract submission",
-    "paper due",
-    "manuscript",
-]
-
-# 通知日を示すキーワード
-NOTIFICATION_KEYWORDS = [
-    "notification of acceptance",
-    "notification date",
-    "acceptance notification",
-    "author notification",
-    "notification",
+    "copyright",
+    "ieee copyright",
 ]
 
 
@@ -251,35 +255,46 @@ NOTIFICATION_KEYWORDS = [
 # ─────────────────────────────────────────────
 
 MONTH_MAP = {
-    "jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,
-    "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12,
-    "january":1,"february":2,"march":3,"april":4,"june":6,
-    "july":7,"august":8,"september":9,"october":10,"november":11,"december":12,
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
+    "january": 1, "february": 2, "march": 3, "april": 4,
+    "june": 6, "july": 7, "august": 8, "september": 9,
+    "october": 10, "november": 11, "december": 12,
 }
 
+
 def parse_date(raw: str) -> str | None:
+    """文字列から ISO 形式 (YYYY-MM-DD) の日付を抽出する。"""
     if not raw:
         return None
-    raw = re.sub(r"\(.*?\)", "", raw).strip()  # "(Firm Deadline!)" などを除去
-    # YYYY-MM-DD
-    m = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", raw)
+    # 括弧内（"(Firm Deadline!)" など）を除去
+    raw = re.sub(r"\(.*?\)", "", raw).strip()
+    # 複数の日付がある場合（延長前→延長後）は最後の日付を優先
+    # "March 1 → March 15, 2026" のような表記に対応
+    raw = re.sub(r".*[→⇒→>]", "", raw).strip()
+
+    # YYYY-MM-DD / YYYY/MM/DD
+    m = re.search(r"(\d{4})[-/](\d{1,2})[-/](\d{1,2})", raw)
     if m:
         return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
-    # DD Month YYYY or Month DD, YYYY
+    # DD Month YYYY
     m = re.search(r"(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})", raw)
     if m:
         mon = MONTH_MAP.get(m.group(2).lower())
         if mon:
             return f"{m.group(3)}-{mon:02d}-{int(m.group(1)):02d}"
-    m = re.search(r"([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})", raw)
+    # Month DD, YYYY / Month DD YYYY
+    m = re.search(r"([A-Za-z]+)\s+(\d{1,2})[,\s]+(\d{4})", raw)
     if m:
         mon = MONTH_MAP.get(m.group(1).lower())
         if mon:
             return f"{m.group(3)}-{mon:02d}-{int(m.group(2)):02d}"
+    # Month YYYY（日付なし）は無視
     return None
 
 
 def parse_conf_dates(raw: str) -> tuple[str | None, str | None]:
+    """会議開催日の範囲を (start, end) で返す。"""
     if not raw:
         return None, None
     # "May 18-21, 2026"
@@ -302,165 +317,260 @@ def parse_conf_dates(raw: str) -> tuple[str | None, str | None]:
 
 
 # ─────────────────────────────────────────────
-# テキストから主会議の締切を抽出
+# HTMLからの日付抽出（構造パース）
 # ─────────────────────────────────────────────
 
-def extract_main_paper_dates(text: str) -> dict:
+def _is_skip_context(text: str) -> bool:
+    """スキップすべきセクション（ワークショップ・チュートリアル等）か判定。"""
+    t = text.lower()
+    return any(kw in t for kw in SKIP_KEYWORDS)
+
+
+def extract_dates_from_soup(soup: BeautifulSoup) -> dict:
     """
-    ページテキストから主会議の締切・通知日を抽出する。
+    BeautifulSoup オブジェクトからHTML構造を利用して日付を抽出する。
 
-    ロジック:
-    1. ページを「セクション」に分割（見出し行で区切る）
-    2. SKIP_SECTION_KEYWORDS を含むセクションを除外
-    3. MAIN_SECTION_KEYWORDS を含むセクション、またはそれらがなければ
-       最初の有効なセクションから締切を抽出
+    対応フォーマット:
+      1. <table> の行（ラベル列 + 日付列）
+      2. <dl><dt>...</dt><dd>...</dd></dl>
+      3. <li> テキスト内の "ラベル: 日付" 形式
+      4. 段落・テキストノードの "ラベル: 日付" 形式
     """
-    lines = [l.strip() for l in text.split("\n") if l.strip()]
-
-    # セクションに分割（大文字の見出し行、または "Call for" で始まる行）
-    sections = []
-    current_section_title = ""
-    current_section_lines = []
-
-    for line in lines:
-        is_heading = (
-            line.lower().startswith("call for") or
-            line.lower().startswith("important date") or
-            (len(line) < 80 and line[0].isupper() and
-             any(kw in line.lower() for kw in ["paper", "proposal", "submission", "author", "dates"]))
-        )
-        if is_heading and current_section_lines:
-            sections.append((current_section_title, current_section_lines))
-            current_section_title = line
-            current_section_lines = []
-        else:
-            if is_heading:
-                current_section_title = line
-            else:
-                current_section_lines.append(line)
-
-    if current_section_lines:
-        sections.append((current_section_title, current_section_lines))
-
-    # セクションがない場合は全テキストを1セクションとして扱う
-    if not sections:
-        sections = [("", lines)]
-
-    log.debug("  セクション数: %d", len(sections))
-    for title, _ in sections:
-        log.debug("    セクション: %s", title[:60])
-
-    def score_section(title: str) -> int:
-        """セクションの優先スコアを返す。高いほど主会議らしい。"""
-        t = title.lower()
-        # スキップセクションは -1
-        if any(kw in t for kw in SKIP_SECTION_KEYWORDS):
-            return -1
-        # 主会議セクションはスコア加算
-        score = 0
-        for i, kw in enumerate(MAIN_SECTION_KEYWORDS):
-            if kw in t:
-                score += (len(MAIN_SECTION_KEYWORDS) - i)  # 前の方が高スコア
-        return score
-
-    # スコア順でソート（スキップ除外）
-    scored = [(score_section(title), title, lines) for title, lines in sections]
-    valid = [(s, t, l) for s, t, l in scored if s >= 0]
-    valid.sort(key=lambda x: x[0], reverse=True)
-
-    if not valid:
-        log.warning("  有効なセクションが見つかりません")
-        return {}
-
-    # 上位セクションから締切・通知日を探す
     result = {}
-    for _, section_title, section_lines in valid[:3]:
-        log.debug("  解析中セクション: %s", section_title[:60])
-        full_section = "\n".join(section_lines)
 
-        if "deadline" not in result:
-            for i, line in enumerate(section_lines):
-                ll = line.lower()
-                if any(kw in ll for kw in DEADLINE_KEYWORDS):
-                    # 同じ行か次の行に日付がある
-                    date_candidates = [line] + section_lines[i+1:i+3]
-                    for dc in date_candidates:
-                        d = parse_date(dc)
-                        if d:
-                            result["deadline"] = d
-                            log.info("  締切日発見: %s ← \"%s\"", d, line[:60])
-                            break
-                    if "deadline" in result:
-                        break
+    def try_set(key: str, value_text: str, context: str = "") -> bool:
+        """未設定のキーに日付をセット。成功したら True を返す。"""
+        if key in result:
+            return False
+        if _is_skip_context(context):
+            return False
+        d = parse_date(value_text)
+        if d:
+            result[key] = d
+            log.info("  [HTML] %s: %s ← \"%s\"", key, d, value_text[:60])
+            return True
+        return False
 
-        if "notification" not in result:
-            for i, line in enumerate(section_lines):
-                ll = line.lower()
-                if any(kw in ll for kw in NOTIFICATION_KEYWORDS):
-                    date_candidates = [line] + section_lines[i+1:i+3]
-                    for dc in date_candidates:
-                        d = parse_date(dc)
-                        if d:
-                            result["notification"] = d
-                            log.info("  通知日発見: %s ← \"%s\"", d, line[:60])
-                            break
-                    if "notification" in result:
-                        break
+    def classify_label(label: str) -> str | None:
+        """ラベルテキストを "deadline" / "notification" / None に分類。"""
+        ll = label.lower()
+        if _is_skip_context(ll):
+            return None
+        for kw in DEADLINE_KEYWORDS:
+            if kw in ll:
+                return "deadline"
+        for kw in NOTIFICATION_KEYWORDS:
+            if kw in ll:
+                return "notification"
+        return None
 
-        if "deadline" in result and "notification" in result:
-            break
+    # ── 1. テーブル行から抽出 ─────────────────────────────────────
+    for table in soup.find_all("table"):
+        # テーブル自体がスキップ対象か（前後の見出しで判断）
+        prev = table.find_previous(["h1", "h2", "h3", "h4", "h5", "h6", "caption"])
+        table_context = prev.get_text() if prev else ""
+
+        for row in table.find_all("tr"):
+            cells = row.find_all(["td", "th"])
+            if len(cells) < 2:
+                continue
+            label = cells[0].get_text(" ", strip=True)
+            value = cells[1].get_text(" ", strip=True)
+            # 3列以上の場合は2列目以降を結合して日付候補にする
+            if len(cells) >= 3:
+                value = " ".join(c.get_text(" ", strip=True) for c in cells[1:])
+
+            key = classify_label(label)
+            if key:
+                try_set(key, value, context=table_context + label)
+
+    # ── 2. <dl><dt><dd> から抽出 ─────────────────────────────────
+    for dl in soup.find_all("dl"):
+        terms = dl.find_all("dt")
+        defs = dl.find_all("dd")
+        for dt, dd in zip(terms, defs):
+            label = dt.get_text(" ", strip=True)
+            value = dd.get_text(" ", strip=True)
+            key = classify_label(label)
+            if key:
+                try_set(key, value, context=label)
+
+    # ── 3. <li> の "ラベル: 日付" 形式 ─────────────────────────────
+    for li in soup.find_all("li"):
+        text = li.get_text(" ", strip=True)
+        # "Paper Submission Deadline: March 15, 2026" のような形式
+        if ":" in text:
+            parts = text.split(":", 1)
+            label, value = parts[0], parts[1]
+            key = classify_label(label)
+            if key:
+                try_set(key, value, context=label)
+        # "Paper Submission Deadline – March 15, 2026" のような形式
+        elif re.search(r"[-–—]", text):
+            parts = re.split(r"[-–—]", text, 1)
+            if len(parts) == 2:
+                label, value = parts[0], parts[1]
+                key = classify_label(label)
+                if key:
+                    try_set(key, value, context=label)
+
+    # ── 4. 段落テキストの行単位スキャン ──────────────────────────
+    if "deadline" not in result or "notification" not in result:
+        full_text = soup.get_text("\n")
+        _extract_from_text(full_text, result)
 
     return result
 
 
+def _extract_from_text(text: str, result: dict) -> None:
+    """
+    プレーンテキストから締切・通知日を抽出して result に追記する。
+    HTMLパースの補完として使用。
+    """
+    lines = [l.strip() for l in text.split("\n") if l.strip()]
+
+    # "Important Dates" セクションを優先探索
+    in_important_dates = False
+    important_dates_lines: list[str] = []
+    other_lines: list[str] = []
+
+    for line in lines:
+        ll = line.lower()
+        if re.search(r"important\s+dates?|key\s+dates?|critical\s+dates?", ll):
+            in_important_dates = True
+            continue
+        # 別のセクション見出しが来たら終了
+        if in_important_dates and len(line) < 100 and re.match(r"[A-Z]", line) and line.endswith((".", ":")):
+            in_important_dates = False
+        if in_important_dates:
+            important_dates_lines.append(line)
+        else:
+            other_lines.append(line)
+
+    # Important Dates セクションを優先、なければ全テキスト
+    target_lines = important_dates_lines if important_dates_lines else lines
+
+    for i, line in enumerate(target_lines):
+        ll = line.lower()
+        if _is_skip_context(ll):
+            continue
+
+        # ラベル: 日付 または ラベル  日付 の形式
+        key = None
+        for kw in DEADLINE_KEYWORDS:
+            if kw in ll and "deadline" not in result:
+                key = "deadline"
+                break
+        if key is None:
+            for kw in NOTIFICATION_KEYWORDS:
+                if kw in ll and "notification" not in result:
+                    key = "notification"
+                    break
+        if key is None:
+            continue
+
+        # 同じ行か次の1〜2行から日付を探す
+        candidates = [line] + target_lines[i + 1: i + 3]
+        for candidate in candidates:
+            d = parse_date(candidate)
+            if d:
+                result[key] = d
+                log.info("  [TEXT] %s: %s ← \"%s\"", key, d, line[:60])
+                break
+
+
 # ─────────────────────────────────────────────
-# Playwright で公式サイトを取得
+# ページ取得（requests → Playwright の順）
 # ─────────────────────────────────────────────
 
-def fetch_official_page(base_url: str, paths: list[str]) -> tuple[str, str]:
-    """
-    Playwright でページを取得し (page_text, final_url) を返す。
-    失敗した場合は ("", "") を返す。
-    """
+def fetch_with_requests(url: str) -> BeautifulSoup | None:
+    """requests で取得して BeautifulSoup を返す。失敗時は None。"""
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=15)
+        if r.status_code == 200 and len(r.text) > 300:
+            log.info("  [requests] 取得成功: %s", url)
+            return BeautifulSoup(r.text, "html.parser")
+        else:
+            log.debug("  [requests] %s → HTTP %d", url, r.status_code)
+    except Exception as e:
+        log.debug("  [requests] %s → %s", url, e)
+    return None
+
+
+def fetch_with_playwright(url: str) -> BeautifulSoup | None:
+    """Playwright で JS レンダリングして BeautifulSoup を返す。失敗時は None。"""
     try:
         from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
     except ImportError:
         log.warning("  Playwright が未インストール（スキップ）")
-        return "", ""
+        return None
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         ctx = browser.new_context(
-            user_agent=(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/124.0.0.0 Safari/537.36"
-            ),
+            user_agent=HEADERS["User-Agent"],
             locale="en-US",
         )
         page = ctx.new_page()
-
-        for path in paths:
-            url = base_url.rstrip("/") + path
+        try:
+            resp = page.goto(url, wait_until="domcontentloaded", timeout=25000)
+            if resp and resp.status == 200:
+                page.wait_for_timeout(2500)  # JS レンダリング待機
+                html = page.content()
+                browser.close()
+                if len(html) > 300:
+                    log.info("  [playwright] 取得成功: %s", url)
+                    return BeautifulSoup(html, "html.parser")
+            else:
+                log.debug("  [playwright] %s → HTTP %s", url, resp.status if resp else "?")
+        except PWTimeout:
+            log.debug("  [playwright] %s → タイムアウト", url)
+        except Exception as e:
+            log.debug("  [playwright] %s → %s", url, e)
+        finally:
             try:
-                resp = page.goto(url, wait_until="domcontentloaded", timeout=20000)
-                if resp and resp.status == 200:
-                    # JS レンダリングを待つ
-                    page.wait_for_timeout(2000)
-                    text = page.inner_text("body")
-                    if len(text) > 200:
-                        log.info("  公式サイト取得成功: %s", url)
-                        browser.close()
-                        return text, url
-                else:
-                    log.debug("  %s → HTTP %s", url, resp.status if resp else "?")
-            except PWTimeout:
-                log.debug("  %s → タイムアウト", url)
-            except Exception as e:
-                log.debug("  %s → %s", url, e)
+                browser.close()
+            except Exception:
+                pass
+    return None
 
-        browser.close()
-    return "", ""
+
+def fetch_authors_page(base_url: str, paths: list[str]) -> tuple[BeautifulSoup | None, str]:
+    """
+    authors ページを取得して (soup, final_url) を返す。
+    requests で試みてコンテンツが薄い場合は Playwright にフォールバック。
+    """
+    for path in paths:
+        url = base_url.rstrip("/") + path
+
+        # Step A: requests（静的HTML）
+        soup = fetch_with_requests(url)
+        if soup:
+            # 「Important Dates」「Submission」などのキーワードがページにあるか確認
+            page_text = soup.get_text().lower()
+            has_date_info = any(kw in page_text for kw in [
+                "important dates", "submission deadline", "paper submission",
+                "call for papers", "deadline",
+            ])
+            if has_date_info:
+                return soup, url
+            # コンテンツがあるがキーワードなし → JS レンダリングが必要かもしれない
+
+        # Step B: Playwright（JS レンダリング）
+        soup_pw = fetch_with_playwright(url)
+        if soup_pw:
+            page_text = soup_pw.get_text().lower()
+            has_date_info = any(kw in page_text for kw in [
+                "important dates", "submission deadline", "paper submission",
+                "call for papers", "deadline",
+            ])
+            if has_date_info:
+                return soup_pw, url
+
+        # どちらも有効なコンテンツを返さなかった → 次のパスを試す
+        log.debug("  %s → 有効なコンテンツなし", url)
+
+    return None, ""
 
 
 # ─────────────────────────────────────────────
@@ -469,15 +579,7 @@ def fetch_official_page(base_url: str, paths: list[str]) -> tuple[str, str]:
 
 def wikicfp_fetch(keyword: str) -> dict:
     """WikiCFP から会議情報を取得する（フォールバック用）。"""
-    import requests
-    from bs4 import BeautifulSoup
-
-    HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
-        "Accept-Language": "en-US,en;q=0.9",
-    }
-
-    url = f"http://www.wikicfp.com/cfp/call?conference={keyword}"
+    url = f"http://www.wikicfp.com/cfp/call?conference={requests.utils.quote(keyword)}"
     try:
         r = requests.get(url, headers=HEADERS, timeout=15)
         r.raise_for_status()
@@ -508,12 +610,19 @@ def wikicfp_fetch(keyword: str) -> dict:
 
         if year >= today.year:
             dl_parsed = parse_date(dl)
-            if dl_parsed and date.fromisoformat(dl_parsed) >= today:
-                best = {"event_id": eid_m.group(1), "title": title,
-                        "when": when, "where": where, "deadline": dl, "year": year}
+            if dl_parsed:
+                best = {
+                    "event_id": eid_m.group(1),
+                    "title": title,
+                    "when": when,
+                    "where": where,
+                    "deadline": dl,
+                    "year": year,
+                }
                 break
 
     if not best:
+        log.info("  WikiCFP: 有効なエントリなし")
         return {}
 
     # 詳細ページ取得
@@ -521,10 +630,10 @@ def wikicfp_fetch(keyword: str) -> dict:
     try:
         r2 = requests.get(
             f"http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid={best['event_id']}",
-            headers=HEADERS, timeout=15
+            headers=HEADERS, timeout=15,
         )
         soup2 = BeautifulSoup(r2.text, "html.parser")
-        info = {"where": best["where"], "when": best["when"]}
+        info: dict = {"where": best["where"], "when": best["when"]}
         for row2 in soup2.select("table.gg tr"):
             cells2 = row2.find_all("td")
             if len(cells2) < 2:
@@ -533,7 +642,7 @@ def wikicfp_fetch(keyword: str) -> dict:
             val = cells2[1].get_text(strip=True)
             if "submission deadline" in lbl:
                 info["deadline_raw"] = val
-            elif "notification" in lbl and "deadline_raw" in info:
+            elif "notification" in lbl and "submission" not in lbl:
                 info["notification_raw"] = val
             elif "conference date" in lbl or "when" in lbl:
                 info["confDate_raw"] = val
@@ -544,6 +653,7 @@ def wikicfp_fetch(keyword: str) -> dict:
             if "wikicfp" not in href:
                 info["url"] = href
                 break
+        log.info("  WikiCFP: deadline_raw=%s", info.get("deadline_raw"))
         return info
     except Exception as e:
         log.warning("  WikiCFP 詳細失敗: %s", e)
@@ -556,66 +666,74 @@ def wikicfp_fetch(keyword: str) -> dict:
 
 def process_conference(target: dict, existing: dict) -> dict:
     abbr = target["abbr"]
+    log.info("  authors パスを試行: %s", target["authors_paths"])
 
-    entry = {
-        "abbr":        abbr,
-        "full":        target["full"],
-        "url":         target["base_url"],
-        "area":        target["area"],
-        "location":    "TBD",
-        "confDate":    None,
-        "confDateEnd": None,
-        "deadline":    None,
+    entry: dict = {
+        "abbr":         abbr,
+        "full":         target["full"],
+        "url":          target["base_url"],
+        "area":         target["area"],
+        "location":     "TBD",
+        "confDate":     None,
+        "confDateEnd":  None,
+        "deadline":     None,
         "notification": None,
-        "source":      None,
-        "data_source": "none",
-        "fetched_at":  datetime.utcnow().isoformat() + "Z",
+        "source":       None,
+        "data_source":  "none",
+        "fetched_at":   datetime.utcnow().isoformat() + "Z",
     }
 
-    # ── Step 1: 公式サイト authors ページから取得 ──────────────────
-    page_text, page_url = fetch_official_page(
-        target["base_url"], target["authors_paths"]
-    )
+    # ── Step 1: 公式 authors ページを HTML パース ──────────────────
+    soup, page_url = fetch_authors_page(target["base_url"], target["authors_paths"])
 
-    if page_text:
-        dates = extract_main_paper_dates(page_text)
+    if soup:
+        dates = extract_dates_from_soup(soup)
         if dates.get("deadline"):
             entry["deadline"]     = dates["deadline"]
             entry["notification"] = dates.get("notification")
             entry["source"]       = page_url
             entry["data_source"]  = "official"
-            log.info("  ✓ 公式サイトから取得: deadline=%s", entry["deadline"])
+            log.info("  ✓ 公式サイトから取得: deadline=%s, notification=%s",
+                     entry["deadline"], entry["notification"])
+        else:
+            log.info("  公式サイト取得済みだが日付が見つからず")
 
     # ── Step 2: WikiCFP フォールバック ─────────────────────────────
     if not entry["deadline"]:
-        log.info("  → WikiCFP フォールバック")
+        log.info("  → WikiCFP フォールバック: %s", target["wikicfp_search"])
         wdata = wikicfp_fetch(target["wikicfp_search"])
         if wdata:
-            entry["deadline"]     = parse_date(wdata.get("deadline_raw")) or entry["deadline"]
-            entry["notification"] = parse_date(wdata.get("notification_raw")) or entry["notification"]
-            entry["location"]     = wdata.get("where", "TBD")
-            entry["url"]          = wdata.get("url", entry["url"])
-            start, end = parse_conf_dates(wdata.get("confDate_raw") or wdata.get("when", ""))
-            entry["confDate"]     = start
-            entry["confDateEnd"]  = end
-            entry["data_source"]  = "wikicfp"
-            time.sleep(1.5)
+            dl = parse_date(wdata.get("deadline_raw", ""))
+            nt = parse_date(wdata.get("notification_raw", ""))
+            if dl:
+                entry["deadline"]     = dl
+                entry["notification"] = nt
+                entry["location"]     = wdata.get("where", "TBD")
+                entry["url"]          = wdata.get("url", entry["url"])
+                start, end = parse_conf_dates(
+                    wdata.get("confDate_raw") or wdata.get("when", "")
+                )
+                entry["confDate"]     = start
+                entry["confDateEnd"]  = end
+                entry["data_source"]  = "wikicfp"
+                log.info("  ✓ WikiCFP から取得: deadline=%s", entry["deadline"])
+        time.sleep(1.5)
 
     # ── Step 3: 既存データで補完 ────────────────────────────────────
     old = existing.get(abbr, {})
     for field in ("deadline", "notification", "confDate", "confDateEnd", "location", "url", "full"):
         if not entry.get(field) and old.get(field):
             entry[field] = old[field]
-            log.info("  補完 [%s] ← 既存データ", field)
+            log.info("  補完 [%s] ← 既存データ: %s", field, old[field])
 
     return entry
 
 
-def main():
+def main() -> None:
     log.info("======== 会議情報取得開始 (%d 件) ========", len(TARGET_CONFERENCES))
 
     output_path = REPO_ROOT / "conferences.json"
-    existing = {}
+    existing: dict[str, dict] = {}
     if output_path.exists():
         try:
             old = json.loads(output_path.read_text(encoding="utf-8"))
@@ -636,11 +754,17 @@ def main():
             log.error("  エラー: %s", e)
             old_entry = existing.get(target["abbr"])
             conferences.append(old_entry if old_entry else {
-                "abbr": target["abbr"], "full": target["full"],
-                "url": target["base_url"], "area": target["area"],
-                "location": "TBD", "confDate": None, "confDateEnd": None,
-                "deadline": None, "notification": None,
-                "data_source": "error", "fetched_at": datetime.utcnow().isoformat() + "Z",
+                "abbr":        target["abbr"],
+                "full":        target["full"],
+                "url":         target["base_url"],
+                "area":        target["area"],
+                "location":    "TBD",
+                "confDate":    None,
+                "confDateEnd": None,
+                "deadline":    None,
+                "notification": None,
+                "data_source": "error",
+                "fetched_at":  datetime.utcnow().isoformat() + "Z",
             })
 
     output = {
