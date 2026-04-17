@@ -1,0 +1,215 @@
+{
+  "_comment": "手動で正確な情報を書くファイル。スクレイピング結果より優先されます。",
+  "_rule_deadline": "主会議（Symposium/Technical Papers）の締切のみ記載。Workshop・Tutorial・Industry は除外。",
+  "_rule_url": "authors ページではなく、会議の home ページを記載してください。",
+  "_rule_null": "未発表・不明な情報は null にしてください（TBD表示になります）。",
+
+  "IEEE GLOBECOM": {
+    "full": "IEEE Global Communications Conference 2026",
+    "url": "https://globecom2026.ieee-globecom.org/",
+    "location": "Cape Town, South Africa",
+    "confDate": "2026-12-07",
+    "confDateEnd": "2026-12-11",
+    "deadline": "2026-05-03",
+    "notification": "2026-08-01",
+    "_source": "https://globecom2026.ieee-globecom.org/authors (Call for Symposium Papers)"
+  },
+
+  "IEEE WCNC": {
+    "full": "IEEE Wireless Communications and Networking Conference 2026",
+    "url": "https://wcnc2026.ieee-wcnc.org/",
+    "location": "Milan, Italy",
+    "confDate": "2026-03-24",
+    "confDateEnd": "2026-03-27",
+    "deadline": "2025-09-15",
+    "notification": "2025-12-20",
+    "_source": "要確認: https://wcnc2026.ieee-wcnc.org/authors"
+  },
+
+  "IEEE ICC": {
+    "full": "IEEE International Conference on Communications 2026",
+    "url": "https://icc2026.ieee-icc.org/",
+    "location": "Glasgow, UK",
+    "confDate": "2026-06-01",
+    "confDateEnd": "2026-06-05",
+    "deadline": "2025-10-15",
+    "notification": "2026-01-20",
+    "_source": "要確認: https://icc2026.ieee-icc.org/authors"
+  },
+
+  "IEEE INFOCOM": {
+    "full": "IEEE International Conference on Computer Communications 2026",
+    "url": "https://infocom2026.ieee-infocom.org/",
+    "location": "London, UK",
+    "confDate": "2026-05-18",
+    "confDateEnd": "2026-05-21",
+    "deadline": "2025-07-24",
+    "notification": "2025-12-01",
+    "_source": "https://infocom2026.ieee-infocom.org/authors"
+  },
+
+  "IEEE VTC": {
+    "full": "IEEE Vehicular Technology Conference 2026-Fall",
+    "url": "https://events.vtsociety.org/vtc2026-fall/",
+    "location": "Tokyo, Japan",
+    "confDate": "2026-10-19",
+    "confDateEnd": "2026-10-22",
+    "deadline": "2026-05-15",
+    "notification": "2026-07-31",
+    "_source": "要確認: https://events.vtsociety.org/vtc2026-fall/authors"
+  },
+
+  "IEEE PIMRC": {
+    "full": "IEEE International Symposium on Personal, Indoor and Mobile Radio Communications 2026",
+    "url": "https://pimrc2026.ieee-pimrc.org/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認: https://pimrc2026.ieee-pimrc.org/authors"
+  },
+
+  "IEEE IV": {
+    "full": "IEEE Intelligent Vehicles Symposium 2026",
+    "url": "https://iv2026.ieee-iv.org/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認: https://iv2026.ieee-iv.org/"
+  },
+
+  "IEEE VNC": {
+    "full": "IEEE Vehicular Networking Conference 2026",
+    "url": "https://ieee-vnc.org/2026/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認: https://ieee-vnc.org/2026/"
+  },
+
+  "IEEE ITSC": {
+    "full": "IEEE International Conference on Intelligent Transportation Systems 2026",
+    "url": "https://ieee-itsc.org/2026/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認: https://ieee-itsc.org/2026/"
+  },
+
+  "ITS World Congress": {
+    "full": "ITS World Congress 2026",
+    "url": "https://www.itsworldcongress.com/",
+    "location": "Dubai, UAE",
+    "confDate": "2026-10-04",
+    "confDateEnd": "2026-10-08",
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認"
+  },
+
+  "IEEE GCCE": {
+    "full": "IEEE Global Conference on Consumer Electronics 2026",
+    "url": "https://www.ieee-gcce.org/2026/",
+    "location": "Kyoto, Japan",
+    "confDate": "2026-10-27",
+    "confDateEnd": "2026-10-30",
+    "deadline": "2026-06-08",
+    "notification": "2026-08-03",
+    "_source": "要確認: https://www.ieee-gcce.org/2026/"
+  },
+
+  "IEEE WFIoT": {
+    "full": "IEEE World Forum on Internet of Things 2026",
+    "url": "https://wfiot2026.iot.ieee.org/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認"
+  },
+
+  "IEEE CCNC": {
+    "full": "IEEE Consumer Communications and Networking Conference 2027",
+    "url": "https://ccnc2027.ieee-ccnc.org/",
+    "location": "Las Vegas, USA",
+    "confDate": "2027-01-10",
+    "confDateEnd": "2027-01-13",
+    "deadline": "2026-07-15",
+    "notification": "2026-10-01",
+    "_source": "要確認"
+  },
+
+  "IEEE CTW": {
+    "full": "IEEE Communication Theory Workshop 2026",
+    "url": "https://ctw2026.ieee-ctw.org/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認"
+  },
+
+  "APCC": {
+    "full": "Asia-Pacific Conference on Communications 2026",
+    "url": "https://apcc2026.org/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認"
+  },
+
+  "ICOIN": {
+    "full": "International Conference on Information Networking 2027",
+    "url": "https://www.icoin.org/",
+    "location": "TBD",
+    "confDate": "2027-01-13",
+    "confDateEnd": "2027-01-16",
+    "deadline": "2026-09-01",
+    "notification": "2026-11-01",
+    "_source": "要確認: https://www.icoin.org/"
+  },
+
+  "WPMC": {
+    "full": "International Symposium on Wireless Personal Multimedia Communications 2026",
+    "url": "https://www.wpmc-conf.org/",
+    "location": "TBD",
+    "confDate": null,
+    "confDateEnd": null,
+    "deadline": null,
+    "notification": null,
+    "_source": "要確認"
+  },
+
+  "ICETC": {
+    "full": "International Conference on Emerging Technologies for Communications 2026",
+    "url": "https://www.ieice.org/cs/icetc/2026/",
+    "location": "Sapporo, Japan",
+    "confDate": "2026-11-17",
+    "confDateEnd": "2026-11-19",
+    "deadline": "2026-07-13",
+    "notification": "2026-09-14",
+    "_source": "要確認"
+  },
+
+  "ICNC": {
+    "full": "International Conference on Computing, Networking and Communications 2027",
+    "url": "https://www.conf-icnc.org/2027/",
+    "location": "Hawaii, USA",
+    "confDate": "2027-02-17",
+    "confDateEnd": "2027-02-20",
+    "deadline": "2026-08-01",
+    "notification": "2026-10-15",
+    "_source": "要確認"
+  }
+}
