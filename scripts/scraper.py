@@ -3,10 +3,6 @@ Conference Tracker Scraper
 ==========================
 WikiCFP から指定した会議の投稿締切・開催情報を取得し、
 conferences.json に書き出す。
-
-使い方:
-    pip install requests beautifulsoup4
-    python scripts/scraper.py
 """
 
 import json
@@ -19,70 +15,151 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-# ─────────────────────────────────────────────
-# 追跡したい会議リスト
-# abbr     : 表示名（略称）
-# search   : WikiCFP の検索キーワード
-# full     : 正式名称（WikiCFP から取得できない場合の fallback）
-# url      : 公式サイト（WikiCFP から取得できない場合の fallback）
-# area     : 研究分野タグ
-# ─────────────────────────────────────────────
 TARGET_CONFERENCES = [
+
+    # ── 通信・ネットワーク 主要フラッグシップ ──────────────────────────
     {
-        "abbr": "INFOCOM",
-        "search": "INFOCOM",
-        "full": "IEEE International Conference on Computer Communications",
-        "url": "https://infocom2026.ieee-infocom.org/",
-        "area": "Networking",
-    },
-    {
-        "abbr": "GLOBECOM",
+        "abbr": "IEEE GLOBECOM",
         "search": "GLOBECOM",
         "full": "IEEE Global Communications Conference",
-        "url": "https://globecom2026.ieee-globecom.org/",
+        "url": "https://globecom2025.ieee-globecom.org/",
         "area": "Communications",
     },
     {
-        "abbr": "VTC",
-        "search": "VTC",
-        "full": "IEEE Vehicular Technology Conference",
-        "url": "https://events.vtsociety.org/",
-        "area": "V2X / 5G",
-    },
-    {
-        "abbr": "ICC",
-        "search": "ICC",
-        "full": "IEEE International Conference on Communications",
-        "url": "https://icc2027.ieee-icc.org/",
-        "area": "Communications",
-    },
-    {
-        "abbr": "WCNC",
+        "abbr": "IEEE WCNC",
         "search": "WCNC",
         "full": "IEEE Wireless Communications and Networking Conference",
         "url": "https://wcnc2026.ieee-wcnc.org/",
         "area": "Wireless",
     },
     {
-        "abbr": "MobiCom",
-        "search": "MobiCom",
-        "full": "ACM Annual International Conference on Mobile Computing and Networking",
-        "url": "https://www.sigmobile.org/mobicom/",
-        "area": "Wireless",
+        "abbr": "IEEE ICC",
+        "search": "ICC",
+        "full": "IEEE International Conference on Communications",
+        "url": "https://icc2026.ieee-icc.org/",
+        "area": "Communications",
     },
     {
-        "abbr": "PIMRC",
+        "abbr": "IEEE INFOCOM",
+        "search": "INFOCOM",
+        "full": "IEEE International Conference on Computer Communications",
+        "url": "https://infocom2026.ieee-infocom.org/",
+        "area": "Networking",
+    },
+    {
+        "abbr": "IEEE VTC",
+        "search": "VTC",
+        "full": "IEEE Vehicular Technology Conference",
+        "url": "https://events.vtsociety.org/",
+        "area": "V2X / 5G",
+    },
+    {
+        "abbr": "IEEE PIMRC",
         "search": "PIMRC",
         "full": "IEEE International Symposium on Personal, Indoor and Mobile Radio Communications",
         "url": "https://pimrc2025.ieee-pimrc.org/",
         "area": "Wireless",
     },
+
+    # ── 車両・ITS・V2X ─────────────────────────────────────────────────
     {
-        "abbr": "ICCV",
-        "search": "ICCV",
-        "full": "IEEE/CVF International Conference on Computer Vision",
-        "url": "https://iccv2025.thecvf.com/",
-        "area": "Computer Vision",
+        "abbr": "IEEE IV",
+        "search": "Intelligent Vehicles Symposium",
+        "full": "IEEE Intelligent Vehicles Symposium",
+        "url": "https://iv2025.ieee-iv.org/",
+        "area": "ITS / V2X",
+    },
+    {
+        "abbr": "IEEE VNC",
+        "search": "Vehicular Networking Conference",
+        "full": "IEEE Vehicular Networking Conference",
+        "url": "https://www.ieeevnc.org/",
+        "area": "V2X / Networking",
+    },
+    {
+        "abbr": "IEEE ITSC",
+        "search": "ITSC",
+        "full": "IEEE International Conference on Intelligent Transportation Systems",
+        "url": "https://ieee-itsc.org/",
+        "area": "ITS",
+    },
+    {
+        "abbr": "ITS World Congress",
+        "search": "ITS World Congress",
+        "full": "ITS World Congress",
+        "url": "https://www.itsworldcongress.org/",
+        "area": "ITS",
+    },
+
+    # ── コンシューマエレクトロニクス・IoT ─────────────────────────────
+    {
+        "abbr": "IEEE GCCE",
+        "search": "GCCE",
+        "full": "IEEE Global Conference on Consumer Electronics",
+        "url": "https://www.ieee-gcce.org/",
+        "area": "Consumer Electronics",
+    },
+    {
+        "abbr": "IEEE WFIoT",
+        "search": "WFIoT",
+        "full": "IEEE World Forum on Internet of Things",
+        "url": "https://wfiot2025.iot.ieee.org/",
+        "area": "IoT",
+    },
+    {
+        "abbr": "IEEE CCNC",
+        "search": "CCNC",
+        "full": "IEEE Consumer Communications and Networking Conference",
+        "url": "https://ccnc2026.ieee-ccnc.org/",
+        "area": "Consumer / Networking",
+    },
+
+    # ── 理論・ワークショップ ───────────────────────────────────────────
+    {
+        "abbr": "IEEE CTW",
+        "search": "Communication Theory Workshop",
+        "full": "IEEE Communication Theory Workshop",
+        "url": "https://ctw2025.ieee-ctw.org/",
+        "area": "Theory",
+    },
+
+    # ── アジア太平洋・地域会議 ────────────────────────────────────────
+    {
+        "abbr": "APCC",
+        "search": "APCC",
+        "full": "Asia-Pacific Conference on Communications",
+        "url": "https://apcc2025.org/",
+        "area": "Asia-Pacific",
+    },
+    {
+        "abbr": "ICOIN",
+        "search": "ICOIN",
+        "full": "International Conference on Information Networking",
+        "url": "https://www.icoin.org/",
+        "area": "Networking",
+    },
+    {
+        "abbr": "WPMC",
+        "search": "WPMC",
+        "full": "International Symposium on Wireless Personal Multimedia Communications",
+        "url": "https://www.wpmc-conf.org/",
+        "area": "Wireless",
+    },
+    {
+        "abbr": "ICETC",
+        "search": "ICETC",
+        "full": "International Conference on Emerging Technologies for Communications",
+        "url": "https://www.ieice.org/cs/icetc/",
+        "area": "Emerging Technologies",
+    },
+
+    # ── 北米・一般 ────────────────────────────────────────────────────
+    {
+        "abbr": "ICNC",
+        "search": "ICNC",
+        "full": "International Conference on Computing, Networking and Communications",
+        "url": "https://www.conf-icnc.org/",
+        "area": "Networking",
     },
 ]
 
@@ -92,7 +169,7 @@ WIKICFP_EVENT  = "http://www.wikicfp.com/cfp/servlet/event.showcfp"
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (compatible; ConferenceTrackerBot/1.0; "
-        "+https://github.com/YOUR_USERNAME/conf-tracker)"
+        "+https://github.com/MrZHU17/ConfsSchedule)"
     )
 }
 
@@ -104,16 +181,11 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-# ─────────────────────────────────────────────
-# WikiCFP ユーティリティ
-# ─────────────────────────────────────────────
-
-def wikicfp_search(keyword: str, max_results: int = 5) -> list[dict]:
-    """WikiCFP を keyword で検索し、候補イベントのリストを返す。"""
+def wikicfp_search(keyword: str, max_results: int = 8) -> list[dict]:
     try:
         r = requests.get(
             WIKICFP_SEARCH,
-            params={"q": keyword, "year": "f"},  # year=f → 未来のイベントを優先
+            params={"q": keyword, "year": "f"},
             headers=HEADERS,
             timeout=15,
         )
@@ -125,7 +197,6 @@ def wikicfp_search(keyword: str, max_results: int = 5) -> list[dict]:
     soup = BeautifulSoup(r.text, "html.parser")
     results = []
 
-    # WikiCFP の検索結果テーブル
     for row in soup.select("table.oveAli tr")[1:max_results + 1]:
         cells = row.find_all("td")
         if len(cells) < 4:
@@ -149,7 +220,6 @@ def wikicfp_search(keyword: str, max_results: int = 5) -> list[dict]:
 
 
 def wikicfp_detail(event_id: str) -> dict:
-    """WikiCFP イベント詳細ページから情報を取得する。"""
     try:
         r = requests.get(
             WIKICFP_EVENT,
@@ -165,7 +235,6 @@ def wikicfp_detail(event_id: str) -> dict:
     soup = BeautifulSoup(r.text, "html.parser")
     info = {}
 
-    # タイトル・公式URL
     h1 = soup.find("h1")
     if h1:
         info["full"] = h1.get_text(strip=True)
@@ -174,7 +243,6 @@ def wikicfp_detail(event_id: str) -> dict:
     if link_tags:
         info["url"] = link_tags[0]["href"]
 
-    # 会議名テーブルから各フィールドを抽出
     for row in soup.select("table.gg tr"):
         cells = row.find_all("td")
         if len(cells) < 2:
@@ -194,31 +262,18 @@ def wikicfp_detail(event_id: str) -> dict:
     return info
 
 
-# ─────────────────────────────────────────────
-# 日付パーサー
-# ─────────────────────────────────────────────
-
 MONTH_MAP = {
     "jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,
     "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12,
 }
 
-def parse_date(raw: str | None) -> str | None:
-    """
-    WikiCFP の日付文字列を YYYY-MM-DD に変換する。
-    例: "Jul 24, 2025" → "2025-07-24"
-         "2025-07-24"   → "2025-07-24"
-    """
+def parse_date(raw):
     if not raw:
         return None
     raw = raw.strip()
-
-    # YYYY-MM-DD
     m = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", raw)
     if m:
         return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
-
-    # Month DD, YYYY  or  DD Month YYYY
     m = re.search(
         r"(?:(\d{1,2})\s+)?([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})",
         raw,
@@ -229,17 +284,12 @@ def parse_date(raw: str | None) -> str | None:
         mon = MONTH_MAP.get(month_str[:3].lower())
         if mon:
             return f"{year}-{mon:02d}-{int(day):02d}"
-
     return None
 
 
-def parse_conf_dates(raw: str | None) -> tuple[str | None, str | None]:
-    """
-    "May 18-21, 2026" → ("2026-05-18", "2026-05-21")
-    """
+def parse_conf_dates(raw):
     if not raw:
         return None, None
-
     m = re.search(
         r"([A-Za-z]{3,9})\.?\s+(\d{1,2})\s*[-–]\s*(\d{1,2}),?\s+(\d{4})",
         raw,
@@ -248,21 +298,15 @@ def parse_conf_dates(raw: str | None) -> tuple[str | None, str | None]:
         mon_str, day_start, day_end, year = m.groups()
         mon = MONTH_MAP.get(mon_str[:3].lower())
         if mon:
-            start = f"{year}-{mon:02d}-{int(day_start):02d}"
-            end   = f"{year}-{mon:02d}-{int(day_end):02d}"
-            return start, end
-
-    # 単日
+            return (
+                f"{year}-{mon:02d}-{int(day_start):02d}",
+                f"{year}-{mon:02d}-{int(day_end):02d}",
+            )
     single = parse_date(raw)
     return single, single
 
 
-# ─────────────────────────────────────────────
-# メイン処理
-# ─────────────────────────────────────────────
-
 def fetch_conference(target: dict) -> dict:
-    """1件の会議情報を WikiCFP から取得して返す。"""
     keyword = target["search"]
     log.info("検索中: %s", keyword)
 
@@ -271,31 +315,23 @@ def fetch_conference(target: dict) -> dict:
         log.warning("候補なし: %s", keyword)
         return _fallback(target)
 
-    # 今年・来年のイベントを優先（過去イベントを除外）
     today = date.today()
     best = None
     for cand in candidates:
-        # タイトルにキーワードが含まれるものを選ぶ
-        if keyword.lower() not in cand["title"].lower():
+        if keyword.split()[0].lower() not in cand["title"].lower():
             continue
-        # 締切が過去のものは後回し
         dl_str = parse_date(cand.get("deadline"))
-        if dl_str:
-            dl = date.fromisoformat(dl_str)
-            if dl > today:
-                best = cand
-                break
-        if best is None:
-            best = cand  # 見つからなければ最初の一致を使用
+        if dl_str and date.fromisoformat(dl_str) > today:
+            best = cand
+            break
 
     if best is None:
         best = candidates[0]
 
     log.info("  → 選択: %s (event_id=%s)", best["title"], best["event_id"])
-    time.sleep(1.0)  # 礼儀正しいクローリング
+    time.sleep(1.2)
 
     detail = wikicfp_detail(best["event_id"])
-
     conf_start, conf_end = parse_conf_dates(
         detail.get("confDate_raw") or best.get("when")
     )
@@ -316,7 +352,6 @@ def fetch_conference(target: dict) -> dict:
 
 
 def _fallback(target: dict) -> dict:
-    """WikiCFP で取得できなかった場合の fallback エントリ。"""
     return {
         "abbr":         target["abbr"],
         "full":         target.get("full", ""),
@@ -333,9 +368,8 @@ def _fallback(target: dict) -> dict:
 
 
 def main():
-    log.info("======== 会議情報取得開始 ========")
+    log.info("======== 会議情報取得開始 (%d 件) ========", len(TARGET_CONFERENCES))
 
-    # 既存データを読み込んで fallback に使用
     output_path = Path(__file__).parent.parent / "conferences.json"
     existing = {}
     if output_path.exists():
@@ -348,26 +382,23 @@ def main():
             log.warning("既存データ読み込み失敗: %s", e)
 
     conferences = []
-    for target in TARGET_CONFERENCES:
+    for i, target in enumerate(TARGET_CONFERENCES, 1):
+        log.info("[%d/%d] %s", i, len(TARGET_CONFERENCES), target["abbr"])
         try:
             entry = fetch_conference(target)
-
-            # WikiCFP で取得できなかったフィールドは既存データで補完
             old = existing.get(target["abbr"], {})
             for field in ("deadline", "notification", "confDate", "confDateEnd", "location"):
                 if not entry.get(field) and old.get(field):
                     entry[field] = old[field]
-                    log.info("  補完 [%s.%s] ← 既存データ", target["abbr"], field)
-
+                    log.info("    補完 [%s] ← 既存データ", field)
             conferences.append(entry)
             time.sleep(1.5)
-
         except Exception as e:
             log.error("取得エラー [%s]: %s", target["abbr"], e)
-            # エラーでも既存データを保持する
             if target["abbr"] in existing:
                 conferences.append(existing[target["abbr"]])
-                log.info("  既存データを維持: %s", target["abbr"])
+            else:
+                conferences.append(_fallback(target))
 
     output = {
         "updated_at": datetime.utcnow().isoformat() + "Z",
