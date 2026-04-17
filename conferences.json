@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-17T14:03:39.492626Z",
+  "updated_at": "2026-04-17T14:09:46.918673Z",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
@@ -13,7 +13,7 @@
       "notification": "2026-05-31",
       "source": "https://globecom2026.ieee-globecom.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:00:36.059043Z"
+      "fetched_at": "2026-04-17T14:06:34.855621Z"
     },
     {
       "abbr": "IEEE WCNC",
@@ -27,7 +27,7 @@
       "notification": "2026-01-11",
       "source": "https://wcnc2026.ieee-wcnc.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:00:37.594856Z"
+      "fetched_at": "2026-04-17T14:06:36.008679Z"
     },
     {
       "abbr": "IEEE ICC",
@@ -41,7 +41,7 @@
       "notification": "2026-01-19",
       "source": "https://icc2026.ieee-icc.org/",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:00:37.709403Z"
+      "fetched_at": "2026-04-17T14:06:36.161126Z"
     },
     {
       "abbr": "IEEE INFOCOM",
@@ -55,7 +55,7 @@
       "notification": "2025-12-08",
       "source": "https://infocom2026.ieee-infocom.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:01:49.564099Z"
+      "fetched_at": "2026-04-17T14:06:55.734089Z"
     },
     {
       "abbr": "IEEE VTC",
@@ -69,7 +69,7 @@
       "notification": "2026-05-02",
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:01:49.708264Z"
+      "fetched_at": "2026-04-17T14:06:56.141815Z"
     },
     {
       "abbr": "IEEE PIMRC",
@@ -83,7 +83,7 @@
       "notification": "2026-06-01",
       "source": "https://pimrc2026.ieee-pimrc.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:01:54.338208Z"
+      "fetched_at": "2026-04-17T14:06:58.528133Z"
     },
     {
       "abbr": "IEEE IV",
@@ -97,7 +97,7 @@
       "notification": "2026-04-30",
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:01:54.979381Z"
+      "fetched_at": "2026-04-17T14:06:59.104419Z"
     },
     {
       "abbr": "IEEE VNC",
@@ -111,7 +111,7 @@
       "notification": "2026-03-20",
       "source": "https://ieee-vnc.org/2026/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:02:01.185470Z"
+      "fetched_at": "2026-04-17T14:07:05.830424Z"
     },
     {
       "abbr": "IEEE ITSC",
@@ -125,7 +125,7 @@
       "notification": "2026-05-01",
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:02:02.305956Z"
+      "fetched_at": "2026-04-17T14:07:07.489091Z"
     },
     {
       "abbr": "ITS World Congress",
@@ -139,7 +139,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:02:34.095809Z"
+      "fetched_at": "2026-04-17T14:08:39.815204Z"
     },
     {
       "abbr": "IEEE GCCE",
@@ -153,7 +153,7 @@
       "notification": "2026-07-10",
       "source": "https://www.ieee-gcce.org/2026/",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:02:44.694785Z"
+      "fetched_at": "2026-04-17T14:08:49.953277Z"
     },
     {
       "abbr": "IEEE WFIoT",
@@ -167,7 +167,7 @@
       "notification": "2026-07-31",
       "source": "https://wfiot2026.iot.ieee.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:02:52.919149Z"
+      "fetched_at": "2026-04-17T14:08:58.180163Z"
     },
     {
       "abbr": "IEEE CCNC",
@@ -181,7 +181,7 @@
       "notification": "2026-07-31",
       "source": "https://ccnc2027.ieee-ccnc.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:02:53.440761Z"
+      "fetched_at": "2026-04-17T14:08:59.336481Z"
     },
     {
       "abbr": "IEEE CTW",
@@ -195,7 +195,7 @@
       "notification": "2026-03-13",
       "source": "https://ctw2026.ieee-ctw.org/authors",
       "data_source": "official",
-      "fetched_at": "2026-04-17T14:02:53.866931Z"
+      "fetched_at": "2026-04-17T14:09:00.204554Z"
     },
     {
       "abbr": "APCC",
@@ -209,7 +209,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:02:53.946628Z"
+      "fetched_at": "2026-04-17T14:09:00.436736Z"
     },
     {
       "abbr": "ICOIN",
@@ -223,7 +223,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:03:03.945750Z"
+      "fetched_at": "2026-04-17T14:09:10.391678Z"
     },
     {
       "abbr": "WPMC",
@@ -237,7 +237,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:03:14.298360Z"
+      "fetched_at": "2026-04-17T14:09:20.556513Z"
     },
     {
       "abbr": "ICETC",
@@ -251,7 +251,7 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:03:19.877402Z"
+      "fetched_at": "2026-04-17T14:09:26.458857Z"
     },
     {
       "abbr": "ICNC",
@@ -265,7 +265,7 @@
       "notification": "2026-10-15",
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:03:33.404368Z"
+      "fetched_at": "2026-04-17T14:09:40.874175Z"
     }
   ]
 }
