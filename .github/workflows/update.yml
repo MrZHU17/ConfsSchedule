@@ -56,6 +56,8 @@ jobs:
           git add conferences.json
           # 変更がある場合のみ commit（差分なしの場合は終了コード 1 を無視）
           git diff --cached --quiet || git commit -m "chore: update conferences.json [$(date -u '+%Y-%m-%d')]"
+          # リモートに先行コミットがある場合に備えて rebase してから push
+          git pull --rebase origin master
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
