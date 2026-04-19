@@ -1,17 +1,12 @@
 """
-Conference Tracker Scraper  v7
+Conference Tracker Scraper  v8
 ==============================
 Claude API + web_search ツールを使って各会議の最新締切日を取得する。
-
-bot対策（HTTP 418 / IP制限）を完全に回避。
-ウェブ検索で最新情報を取得するため、延長済みの締切にも自動対応。
-
-データソース優先順位:
-  1. Claude API + web_search（メイン）
-  2. 既存 conferences.json で補完（API失敗時）
+ANTHROPIC_API_KEY 環境変数（GitHub Actions Secret）を使用。
 """
 
 import json
+import os
 import re
 import time
 import logging
@@ -30,6 +25,22 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 log = logging.getLogger(__name__)
+
+
+def _api_headers() -> dict:
+    """Anthropic API 認証ヘッダーを返す。ANTHROPIC_API_KEY 環境変数が必須。"""
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        raise EnvironmentError(
+            "ANTHROPIC_API_KEY が設定されていません。"
+            "GitHub Actions の Settings > Secrets > Actions に登録してください。"
+        )
+    return {
+        "x-api-key":         api_key,
+        "anthropic-version": "2023-06-01",
+        "content-type":      "application/json",
+    }
+
 
 # ─────────────────────────────────────────────
 # 会議リスト
@@ -187,11 +198,9 @@ def parse_date(raw: str) -> str | None:
     if not raw:
         return None
     raw = re.sub(r"\(.*?\)", "", raw).strip()
-    # 「旧日付 → 新日付」の延長表記は最後の日付（最新）を使う
-    if re.search(r"[→⇒>]", raw):
-        raw = re.split(r"[→⇒>]", raw)[-1].strip()
-    else:
-        raw = re.sub(r">.*", "", raw).strip()
+    # 「旧日付 → 新日付」の延長表記は最後（最新）を使う
+    if re.search(r"[→⇒]", raw):
+        raw = re.split(r"[→⇒]", raw)[-1].strip()
 
     m = re.search(r"(\d{4})[/-](\d{1,2})[/-](\d{1,2})", raw)
     if m:
@@ -215,17 +224,14 @@ def parse_date(raw: str) -> str | None:
 
 SYSTEM_PROMPT = """\
 You are a research assistant that finds academic conference submission deadlines.
-When given a conference name and year, search the web and return ONLY a JSON object.
+Search the web and return ONLY a JSON object — no markdown, no explanation.
 
 Rules:
-- Search for the LATEST / most current deadline (including any extensions).
-- Focus on the MAIN paper submission deadline (not workshop/tutorial/demo).
-- Return ONLY valid JSON, no markdown fences, no extra text.
-- If a date is unknown, use null.
-- Dates must be in ISO format: "YYYY-MM-DD".
-- For conference dates with ranges, use the start date for confDate and end date for confDateEnd.
+- Find the LATEST deadline including any extensions.
+- Focus on MAIN paper submission only (not workshop/tutorial/demo).
+- All dates in ISO format: "YYYY-MM-DD". Unknown fields → null.
 
-JSON schema:
+JSON schema (return exactly this):
 {
   "deadline": "YYYY-MM-DD or null",
   "notification": "YYYY-MM-DD or null",
@@ -239,10 +245,7 @@ JSON schema:
 
 
 def fetch_conference_info(abbr: str, search_query: str) -> dict:
-    """
-    Claude API + web_search で会議情報を取得する。
-    返り値: {"deadline": ..., "notification": ..., ...} または {}
-    """
+    """Claude API + web_search で会議情報を取得する。"""
     payload = {
         "model": MODEL,
         "max_tokens": 1024,
@@ -253,7 +256,7 @@ def fetch_conference_info(abbr: str, search_query: str) -> dict:
                 "role": "user",
                 "content": (
                     f"Find the latest paper submission deadline for: {abbr}\n"
-                    f"Search query: {search_query}\n\n"
+                    f"Search: {search_query}\n"
                     f"Return ONLY the JSON object."
                 ),
             }
@@ -261,22 +264,27 @@ def fetch_conference_info(abbr: str, search_query: str) -> dict:
     }
 
     try:
-        r = requests.post(API_URL, json=payload, timeout=60)
+        r = requests.post(
+            API_URL,
+            headers=_api_headers(),   # ← APIキーをヘッダーに付与
+            json=payload,
+            timeout=60,
+        )
         r.raise_for_status()
         data = r.json()
     except Exception as e:
         log.error("  API呼び出し失敗: %s", e)
         return {}
 
-    # レスポンスからテキストブロックを結合
-    text = ""
-    for block in data.get("content", []):
-        if block.get("type") == "text":
-            text += block.get("text", "")
+    # レスポンスのテキストブロックを結合
+    text = "".join(
+        block.get("text", "")
+        for block in data.get("content", [])
+        if block.get("type") == "text"
+    )
 
-    # JSON抽出（コードフェンスがある場合も対応）
-    text = re.sub(r"```(?:json)?", "", text).strip()
-    # 最初の { から最後の } までを抜き出す
+    # コードフェンスを除去してJSONを抽出
+    text = re.sub(r"```(?:json)?|```", "", text).strip()
     m = re.search(r"\{.*\}", text, re.DOTALL)
     if not m:
         log.warning("  JSONが見つかりません: %s", text[:200])
@@ -284,8 +292,9 @@ def fetch_conference_info(abbr: str, search_query: str) -> dict:
 
     try:
         result = json.loads(m.group())
-        log.info("  API結果: deadline=%s, conf=%s, confidence=%s",
-                 result.get("deadline"), result.get("confDate"), result.get("confidence"))
+        log.info("  API結果: deadline=%s, conf=%s〜%s, confidence=%s",
+                 result.get("deadline"), result.get("confDate"),
+                 result.get("confDateEnd"), result.get("confidence"))
         return result
     except json.JSONDecodeError as e:
         log.warning("  JSONパース失敗: %s | %s", e, m.group()[:200])
@@ -320,13 +329,13 @@ def process_conference(target: dict, existing: dict) -> dict:
 
     if info:
         if info.get("deadline"):
-            entry["deadline"] = parse_date(info["deadline"]) or info["deadline"]
+            entry["deadline"] = parse_date(str(info["deadline"])) or info["deadline"]
         if info.get("notification"):
-            entry["notification"] = parse_date(info["notification"]) or info["notification"]
+            entry["notification"] = parse_date(str(info["notification"])) or info["notification"]
         if info.get("confDate"):
-            entry["confDate"] = parse_date(info["confDate"]) or info["confDate"]
+            entry["confDate"] = parse_date(str(info["confDate"])) or info["confDate"]
         if info.get("confDateEnd"):
-            entry["confDateEnd"] = parse_date(info["confDateEnd"]) or info["confDateEnd"]
+            entry["confDateEnd"] = parse_date(str(info["confDateEnd"])) or info["confDateEnd"]
         if info.get("location"):
             entry["location"] = info["location"]
         if info.get("url"):
@@ -334,7 +343,7 @@ def process_conference(target: dict, existing: dict) -> dict:
         entry["data_source"] = "api_search"
         entry["source"]      = target["search_query"]
 
-    # ── Step 2: 既存データで補完 ────────────────────────────────────
+    # ── Step 2: 既存データで補完（APIで取得できなかったフィールドのみ）──
     old = existing.get(abbr, {})
     for field in ("deadline", "notification", "confDate", "confDateEnd", "location", "url", "full"):
         if not entry.get(field) and old.get(field):
@@ -383,8 +392,7 @@ def main() -> None:
                 "fetched_at":  datetime.now(timezone.utc).isoformat(),
             })
 
-        # API レート制限に配慮
-        time.sleep(2)
+        time.sleep(2)  # APIレート制限に配慮
 
     output = {
         "updated_at":  datetime.now(timezone.utc).isoformat(),
