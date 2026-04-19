@@ -1,0 +1,21 @@
+{
+  "_comment": "手動修正ファイル。スクレイパーの結果より優先される。",
+  "IEEE GLOBECOM 2026": {
+    "deadline": "2026-05-03",
+    "confDate": "2026-09-20",
+    "confDateEnd": "2026-09-23",
+    "location": "Macao, China"
+  },
+  "IEEE ITSC 2026": {
+    "deadline": "2026-03-01",
+    "confDate": "2026-09-15",
+    "confDateEnd": "2026-09-18",
+    "location": "Naples, Italy"
+  }
+  "IEEE WF-IOT 2026": {
+  "deadline": "2026-05-15",
+  "confDate": "2026-10-26",
+  "confDateEnd": "2026-10-29",
+  "location": "Abu Dhabi, United Arab Emirates"
+}
+}
