@@ -512,11 +512,62 @@ def process_conference(target: dict, existing: dict) -> dict:
 
     return entry
 
+# ─────────────────────────────────────────────────────────────
+# 手動オーバーライド読み込み
+# ─────────────────────────────────────────────────────────────
+
+def load_overrides() -> dict[str, dict]:
+    """
+    conferences.override.json を読み込む。
+    ファイルがなければ空辞書を返す（エラーにしない）。
+    """
+    override_path = REPO_ROOT / "conferences.override.json"
+    if not override_path.exists():
+        log.info("override ファイルなし（スキップ）")
+        return {}
+    try:
+        raw = json.loads(override_path.read_text(encoding="utf-8"))
+        # _comment キーは無視
+        overrides = {k: v for k, v in raw.items() if not k.startswith("_")}
+        log.info("override 読み込み: %d 件", len(overrides))
+        return overrides
+    except Exception as e:
+        log.warning("override 読み込み失敗: %s", e)
+        return {}
+
+
+def apply_override(entry: dict, overrides: dict) -> dict:
+    """
+    overrides に該当エントリがあれば、そのフィールドで entry を上書きする。
+    上書きされたフィールドはログに記録する。
+    """
+    abbr = entry.get("abbr", "")
+    patch = overrides.get(abbr)
+    if not patch:
+        return entry
+
+    ALLOWED_FIELDS = {
+        "deadline", "notification", "confDate", "confDateEnd",
+        "location", "url", "full", "area",
+    }
+    for field, value in patch.items():
+        if field not in ALLOWED_FIELDS:
+            log.warning("  override: 不明なフィールド [%s] をスキップ", field)
+            continue
+        old = entry.get(field)
+        entry[field] = value
+        log.info("  override [%s]: %s → %s", field, old, value)
+
+    entry["data_source"] = entry.get("data_source", "none") + "+override"
+    return entry
+
 
 def main() -> None:
     log.info("======== 会議情報取得開始 (%d 件) ========", len(TARGET_CONFERENCES))
 
     output_path = REPO_ROOT / "conferences.json"
+    
+    # 既存データ読み込み
     existing: dict[str, dict] = {}
     if output_path.exists():
         try:
@@ -527,24 +578,32 @@ def main() -> None:
         except Exception as e:
             log.warning("既存データ読み込み失敗: %s", e)
 
+    # ここで override を読み込む ← 追加
+    overrides = load_overrides()
+
     conferences = []
     for i, target in enumerate(TARGET_CONFERENCES, 1):
         log.info("[%d/%d] %s", i, len(TARGET_CONFERENCES), target["abbr"])
         try:
             entry = process_conference(target, existing)
+            entry = apply_override(entry, overrides)  # ← 追加（スクレイピング後に適用）
             conferences.append(entry)
-            log.info("  完了: src=%-10s deadline=%s  loc=%s",
+            log.info("  完了: src=%-20s deadline=%s  loc=%s",
                      entry["data_source"], entry["deadline"], entry["location"])
         except Exception as e:
             log.error("  エラー: %s", e)
-            conferences.append(existing.get(target["abbr"]) or {
-                **{k: target.get(k) for k in ("abbr","full","area")},
-                "url": target["base_url"],
+            fallback = existing.get(target["abbr"]) or {
+                "abbr": target["abbr"], "full": target["full"],
+                "area": target["area"], "url": target["base_url"],
                 "location": None, "confDate": None, "confDateEnd": None,
                 "deadline": None, "notification": None,
-                "data_source": "error", "fetched_at": now,
-            })
-        time.sleep(1)  # サーバー負荷軽減
+                "data_source": "error",
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            }
+            # エラー時もoverrideは適用する ← 追加
+            fallback = apply_override(fallback, overrides)
+            conferences.append(fallback)
+        time.sleep(1)
 
     output_path.write_text(
         json.dumps({
