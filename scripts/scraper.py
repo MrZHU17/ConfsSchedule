@@ -1,27 +1,23 @@
 """
 Conference Tracker Scraper  v10
 ================================
-変更点（v9 → v10）:
-  - WikiCFP スクレイピングを完全削除（ネットワーク制限のため接続不可）
-  - Claude API + web_search のみを使用
-  - anthropic-beta ヘッダーを追加（web_search 必須）
-  - tool_use 複数ターンループを実装
-  - _apply_info を共通化し DRY に
+API キー不要。純粋なWebスクレイピングのみ。
+
+取得元（優先順）:
+  1. 各会議の公式 CFP ページ
+  2. WikiCFP
+  3. conference2go.net
+  4. 既存 conferences.json で補完
 """
 
-import json
-import os
-import re
-import time
-import logging
+import json, re, time, logging
 from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
+from bs4 import BeautifulSoup
 
 REPO_ROOT = Path(__file__).parent.parent
-API_URL   = "https://api.anthropic.com/v1/messages"
-MODEL     = "claude-sonnet-4-20250514"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,176 +26,225 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+SESSION = requests.Session()
+SESSION.headers.update({
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+})
 
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # 会議リスト
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 TARGET_CONFERENCES = [
     {
         "abbr": "IEEE GLOBECOM",
         "full": "IEEE Global Communications Conference",
-        "base_url": "https://globecom2026.ieee-globecom.org",
         "area": "Communications",
-        "search_query": "IEEE GLOBECOM 2026 paper submission deadline",
+        "official_cfp": "https://globecom2026.ieee-globecom.org/authors/call-papers",
+        "base_url":     "https://globecom2026.ieee-globecom.org",
+        "wikicfp_query": "GLOBECOM 2026",
+        "c2g_query":     "GLOBECOM 2026",
     },
     {
         "abbr": "IEEE WCNC",
         "full": "IEEE Wireless Communications and Networking Conference",
-        "base_url": "https://wcnc2026.ieee-wcnc.org",
         "area": "Wireless",
-        "search_query": "IEEE WCNC 2026 paper submission deadline",
+        "official_cfp": "https://wcnc2026.ieee-wcnc.org/authors/call-papers",
+        "base_url":     "https://wcnc2026.ieee-wcnc.org",
+        "wikicfp_query": "WCNC 2026",
+        "c2g_query":     "WCNC 2026",
     },
     {
         "abbr": "IEEE ICC",
         "full": "IEEE International Conference on Communications",
-        "base_url": "https://icc2026.ieee-icc.org",
         "area": "Communications",
-        "search_query": "IEEE ICC 2026 paper submission deadline",
+        "official_cfp": "https://icc2026.ieee-icc.org/authors/call-papers",
+        "base_url":     "https://icc2026.ieee-icc.org",
+        "wikicfp_query": "ICC 2026",
+        "c2g_query":     "IEEE ICC 2026",
     },
     {
         "abbr": "IEEE INFOCOM",
         "full": "IEEE International Conference on Computer Communications",
-        "base_url": "https://infocom2026.ieee-infocom.org",
         "area": "Networking",
-        "search_query": "IEEE INFOCOM 2026 paper submission deadline",
+        "official_cfp": "https://infocom2026.ieee-infocom.org/cfp.html",
+        "base_url":     "https://infocom2026.ieee-infocom.org",
+        "wikicfp_query": "INFOCOM 2026",
+        "c2g_query":     "INFOCOM 2026",
     },
     {
         "abbr": "IEEE VTC",
         "full": "IEEE Vehicular Technology Conference",
-        "base_url": "https://events.vtsociety.org/vtc2026-fall",
         "area": "V2X / 5G",
-        "search_query": "IEEE VTC Fall 2026 paper submission deadline",
+        "official_cfp": "https://events.vtsociety.org/vtc2026-fall/authors/call-for-papers/",
+        "base_url":     "https://events.vtsociety.org/vtc2026-fall",
+        "wikicfp_query": "VTC Fall 2026",
+        "c2g_query":     "VTC 2026",
     },
     {
         "abbr": "IEEE PIMRC",
         "full": "IEEE Int. Symposium on Personal, Indoor and Mobile Radio Communications",
-        "base_url": "https://pimrc2026.ieee-pimrc.org",
         "area": "Wireless",
-        "search_query": "IEEE PIMRC 2026 paper submission deadline",
+        "official_cfp": "https://pimrc2026.ieee-pimrc.org/authors/call-for-papers",
+        "base_url":     "https://pimrc2026.ieee-pimrc.org",
+        "wikicfp_query": "PIMRC 2026",
+        "c2g_query":     "PIMRC 2026",
     },
     {
         "abbr": "IEEE IV",
         "full": "IEEE Intelligent Vehicles Symposium",
-        "base_url": "https://iv2026.ieee-iv.org",
         "area": "ITS / V2X",
-        "search_query": "IEEE Intelligent Vehicles Symposium IV 2026 paper submission deadline",
+        "official_cfp": "https://iv2026.ieee-iv.org/call-for-papers/",
+        "base_url":     "https://iv2026.ieee-iv.org",
+        "wikicfp_query": "IEEE IV 2026",
+        "c2g_query":     "Intelligent Vehicles 2026",
     },
     {
         "abbr": "IEEE VNC",
         "full": "IEEE Vehicular Networking Conference",
-        "base_url": "https://vnc2026.ieee-vnc.org",
         "area": "V2X / Networking",
-        "search_query": "IEEE VNC Vehicular Networking Conference 2026 paper submission deadline",
+        "official_cfp": "https://vnc2026.ieee-vnc.org/cfp.html",
+        "base_url":     "https://vnc2026.ieee-vnc.org",
+        "wikicfp_query": "VNC 2026",
+        "c2g_query":     "VNC 2026",
     },
     {
         "abbr": "IEEE ITSC",
         "full": "IEEE Int. Conference on Intelligent Transportation Systems",
-        "base_url": "https://ieee-itsc.org/2026",
         "area": "ITS",
-        "search_query": "IEEE ITSC 2026 paper submission deadline",
+        "official_cfp": "https://ieee-itsc.org/2026/call-for-papers/",
+        "base_url":     "https://ieee-itsc.org/2026",
+        "wikicfp_query": "ITSC 2026",
+        "c2g_query":     "ITSC 2026",
     },
     {
         "abbr": "ITS World Congress",
         "full": "ITS World Congress",
-        "base_url": "https://2026itsworldcongress.org",
         "area": "ITS",
-        "search_query": "ITS World Congress 2026 paper submission deadline",
+        "official_cfp": "https://2026itsworldcongress.org/call-for-papers/",
+        "base_url":     "https://2026itsworldcongress.org",
+        "wikicfp_query": "ITS World Congress 2026",
+        "c2g_query":     "ITS World Congress 2026",
     },
     {
         "abbr": "IEEE GCCE",
         "full": "IEEE Global Conference on Consumer Electronics",
-        "base_url": "https://www.ieee-gcce.org/2026",
         "area": "Consumer Electronics",
-        "search_query": "IEEE GCCE 2026 paper submission deadline",
+        "official_cfp": "https://www.ieee-gcce.org/2026/cfp.html",
+        "base_url":     "https://www.ieee-gcce.org/2026",
+        "wikicfp_query": "GCCE 2026",
+        "c2g_query":     "GCCE 2026",
     },
     {
         "abbr": "IEEE WFIoT",
         "full": "IEEE World Forum on Internet of Things",
-        "base_url": "https://wfiot2026.iot.ieee.org",
         "area": "IoT",
-        "search_query": "IEEE WFIoT World Forum IoT 2026 paper submission deadline",
+        "official_cfp": "https://wfiot2026.iot.ieee.org/call-for-papers/",
+        "base_url":     "https://wfiot2026.iot.ieee.org",
+        "wikicfp_query": "WFIoT 2026",
+        "c2g_query":     "WFIoT 2026",
     },
     {
         "abbr": "IEEE CCNC",
         "full": "IEEE Consumer Communications and Networking Conference",
-        "base_url": "https://ccnc2027.ieee-ccnc.org",
         "area": "Consumer / Networking",
-        "search_query": "IEEE CCNC 2027 paper submission deadline",
+        "official_cfp": "https://ccnc2027.ieee-ccnc.org/call-for-papers",
+        "base_url":     "https://ccnc2027.ieee-ccnc.org",
+        "wikicfp_query": "CCNC 2027",
+        "c2g_query":     "CCNC 2027",
     },
     {
         "abbr": "IEEE CTW",
         "full": "IEEE Communication Theory Workshop",
-        "base_url": "https://ctw2026.ieee-ctw.org",
         "area": "Theory",
-        "search_query": "IEEE CTW Communication Theory Workshop 2026 paper submission deadline",
+        "official_cfp": "https://ctw2026.ieee-ctw.org/call-for-papers/",
+        "base_url":     "https://ctw2026.ieee-ctw.org",
+        "wikicfp_query": "CTW 2026",
+        "c2g_query":     "CTW 2026",
     },
     {
         "abbr": "APCC",
         "full": "Asia-Pacific Conference on Communications",
-        "base_url": "https://apcc2026.org",
         "area": "Asia-Pacific",
-        "search_query": "APCC Asia-Pacific Conference on Communications 2026 paper submission deadline",
+        "official_cfp": "https://apcc2026.org/call-for-papers/",
+        "base_url":     "https://apcc2026.org",
+        "wikicfp_query": "APCC 2026",
+        "c2g_query":     "APCC 2026",
     },
     {
         "abbr": "ICOIN",
         "full": "International Conference on Information Networking",
-        "base_url": "https://www.icoin.org",
         "area": "Networking",
-        "search_query": "ICOIN International Conference Information Networking 2026 paper submission deadline",
+        "official_cfp": "https://www.icoin.org/cfp.html",
+        "base_url":     "https://www.icoin.org",
+        "wikicfp_query": "ICOIN 2027",
+        "c2g_query":     "ICOIN 2027",
     },
     {
         "abbr": "WPMC",
         "full": "Int. Symposium on Wireless Personal Multimedia Communications",
-        "base_url": "https://www.wpmc-conf.org/2026",
         "area": "Wireless",
-        "search_query": "WPMC 2026 Wireless Personal Multimedia Communications paper submission deadline",
+        "official_cfp": "https://www.wpmc-conf.org/2026/cfp.html",
+        "base_url":     "https://www.wpmc-conf.org/2026",
+        "wikicfp_query": "WPMC 2026",
+        "c2g_query":     "WPMC 2026",
     },
     {
         "abbr": "ICETC",
         "full": "Int. Conference on Emerging Technologies for Communications",
-        "base_url": "https://www.ieice.org/cs/icetc/2026",
         "area": "Emerging Tech",
-        "search_query": "ICETC 2026 Emerging Technologies Communications paper submission deadline",
+        "official_cfp": "https://www.ieice.org/cs/icetc/2026/cfp.html",
+        "base_url":     "https://www.ieice.org/cs/icetc/2026",
+        "wikicfp_query": "ICETC 2026",
+        "c2g_query":     "ICETC 2026",
     },
     {
         "abbr": "ICNC",
         "full": "Int. Conference on Computing, Networking and Communications",
-        "base_url": "https://www.conf-icnc.org/2027",
         "area": "Networking",
-        "search_query": "ICNC 2027 Computing Networking Communications paper submission deadline",
+        "official_cfp": "https://www.conf-icnc.org/2027/cfp.html",
+        "base_url":     "https://www.conf-icnc.org/2027",
+        "wikicfp_query": "ICNC 2027",
+        "c2g_query":     "ICNC 2027",
     },
 ]
 
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # 日付パーサー
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 MONTH_MAP = {
-    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
-    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
-    "january": 1, "february": 2, "march": 3, "april": 4,
-    "june": 6, "july": 7, "august": 8, "september": 9,
-    "october": 10, "november": 11, "december": 12,
+    "jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,
+    "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12,
+    "january":1,"february":2,"march":3,"april":4,
+    "june":6,"july":7,"august":8,"september":9,
+    "october":10,"november":11,"december":12,
 }
-
 
 def parse_date(raw: str) -> str | None:
     if not raw:
         return None
     raw = re.sub(r"\(.*?\)", "", raw).strip()
-    for sep in ("→", "⇒", "->"):
+    # 延長表記「旧 → 新」は最後を使う
+    for sep in ("→", "⇒", "->", "extended to", "Extended to"):
         if sep in raw:
             raw = raw.split(sep)[-1].strip()
             break
-
+    # YYYY-MM-DD
     m = re.search(r"(\d{4})[/-](\d{1,2})[/-](\d{1,2})", raw)
     if m:
         return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
+    # DD Mon YYYY  (e.g. "15 March 2026")
     m = re.search(r"(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})", raw)
     if m:
         mon = MONTH_MAP.get(m.group(2).lower())
         if mon:
             return f"{m.group(3)}-{mon:02d}-{int(m.group(1)):02d}"
+    # Mon DD, YYYY  (e.g. "March 15, 2026")
     m = re.search(r"([A-Za-z]+)\s+(\d{1,2})[,\s]+(\d{4})", raw)
     if m:
         mon = MONTH_MAP.get(m.group(1).lower())
@@ -208,183 +253,214 @@ def parse_date(raw: str) -> str | None:
     return None
 
 
-# ─────────────────────────────────────────────
-# API ヘッダー（anthropic-beta が必須）
-# ─────────────────────────────────────────────
+def _safe_get(url: str, timeout: int = 12) -> BeautifulSoup | None:
+    """GETリクエストを実行し BeautifulSoup を返す。失敗時は None。"""
+    try:
+        r = SESSION.get(url, timeout=timeout)
+        r.raise_for_status()
+        return BeautifulSoup(r.text, "html.parser")
+    except Exception as e:
+        log.warning("    GET失敗 [%s]: %s", url, e)
+        return None
 
-def _api_headers() -> dict:
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if not api_key:
-        raise EnvironmentError(
-            "ANTHROPIC_API_KEY が設定されていません。\n"
-            "  ローカル実行: export ANTHROPIC_API_KEY=sk-ant-...\n"
-            "  GitHub Actions: Settings > Secrets > Actions に登録"
-        )
-    return {
-        "x-api-key":         api_key,
-        "anthropic-version": "2023-06-01",
-        "anthropic-beta":    "web-search-2025-03-05",  # web_search ツールに必須
-        "content-type":      "application/json",
+
+# ─────────────────────────────────────────────────────────────
+# Source 1: 公式サイト CFP ページ
+# ─────────────────────────────────────────────────────────────
+
+# 締切日を示すキーワードパターン
+_DEADLINE_KEYWORDS = re.compile(
+    r"(paper\s+submission|submission\s+deadline|manuscript\s+due"
+    r"|abstract\s+deadline|full\s+paper|camera[- ]ready)",
+    re.I
+)
+_NOTIF_KEYWORDS = re.compile(
+    r"(notification|acceptance\s+notice|author\s+notification)",
+    re.I
+)
+_CONF_KEYWORDS = re.compile(
+    r"(conference\s+date|symposium\s+date|workshop\s+date"
+    r"|congress\s+date|event\s+date)",
+    re.I
+)
+
+def _extract_dates_from_soup(soup: BeautifulSoup) -> dict:
+    """
+    CFP ページの HTML から締切・通知・会議日程・開催地を抽出。
+    キーワードの近くにある日付文字列を探す。
+    """
+    result = {
+        "deadline": None,
+        "notification": None,
+        "confDate": None,
+        "confDateEnd": None,
+        "location": None,
     }
 
+    text = soup.get_text(separator="\n")
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
 
-# ─────────────────────────────────────────────
-# Claude API + web_search（tool_use 複数ターン対応）
-# ─────────────────────────────────────────────
+    # 日付を含む行を全部抽出してインデックスを記録
+    date_lines: list[tuple[int, str, str]] = []  # (行番号, 行テキスト, パース済み日付)
+    for idx, line in enumerate(lines):
+        d = parse_date(line)
+        if d:
+            date_lines.append((idx, line, d))
 
-SYSTEM_PROMPT = """\
-You are a research assistant that finds academic conference submission deadlines.
-Search the web and return ONLY a JSON object — no markdown, no explanation.
+    def nearest_date(keyword_re, start_range=3):
+        """キーワードに近い行から日付を見つける。"""
+        for idx, line in enumerate(lines):
+            if keyword_re.search(line):
+                # キーワード行の前後 start_range 行以内の日付を返す
+                for dl_idx, dl_line, dl_date in date_lines:
+                    if abs(dl_idx - idx) <= start_range:
+                        return dl_date
+        return None
 
-Rules:
-- Find the LATEST deadline including any extensions.
-- Focus on MAIN paper submission only (not workshop/tutorial/demo).
-- All dates in ISO format: "YYYY-MM-DD". Unknown fields → null.
+    result["deadline"]     = nearest_date(_DEADLINE_KEYWORDS)
+    result["notification"] = nearest_date(_NOTIF_KEYWORDS)
+    result["confDate"]     = nearest_date(_CONF_KEYWORDS)
 
-JSON schema (return exactly this):
-{
-  "deadline": "YYYY-MM-DD or null",
-  "notification": "YYYY-MM-DD or null",
-  "confDate": "YYYY-MM-DD or null",
-  "confDateEnd": "YYYY-MM-DD or null",
-  "location": "City, Country or null",
-  "url": "official website URL or null",
-  "confidence": "high | medium | low"
-}
-"""
-
-
-def _extract_json(text: str) -> dict:
-    text = re.sub(r"```(?:json)?|```", "", text).strip()
-    m = re.search(r"\{.*\}", text, re.DOTALL)
-    if not m:
-        return {}
-    try:
-        return json.loads(m.group())
-    except json.JSONDecodeError:
-        return {}
-
-
-def fetch_conference_info(abbr: str, search_query: str) -> dict:
-    """
-    Claude API + web_search で会議情報を取得。
-    stop_reason == "tool_use" のループを正しく処理する。
-    """
-    messages = [
-        {
-            "role": "user",
-            "content": (
-                f"Find the latest paper submission deadline for: {abbr}\n"
-                f"Search query: {search_query}\n"
-                f"Return ONLY the JSON object."
-            ),
-        }
-    ]
-
-    max_turns = 8  # 無限ループ防止
-    for turn in range(max_turns):
-        payload = {
-            "model":      MODEL,
-            "max_tokens": 1024,
-            "system":     SYSTEM_PROMPT,
-            "tools": [
-                {
-                    "type":     "web_search_20250305",
-                    "name":     "web_search",
-                    "max_uses": 3,  # コスト抑制
-                }
-            ],
-            "messages": messages,
-        }
-
-        try:
-            r = requests.post(
-                API_URL,
-                headers=_api_headers(),
-                json=payload,
-                timeout=90,
-            )
-            r.raise_for_status()
-        except requests.HTTPError as e:
-            log.error("  API HTTP エラー [%s]: %s", r.status_code, r.text[:300])
-            return {}
-        except Exception as e:
-            log.error("  API 呼び出し失敗: %s", e)
-            return {}
-
-        data        = r.json()
-        stop_reason = data.get("stop_reason")
-        content     = data.get("content", [])
-
-        log.debug("  ターン %d: stop_reason=%s, blocks=%d", turn + 1, stop_reason, len(content))
-
-        # アシスタント応答を履歴に追加
-        messages.append({"role": "assistant", "content": content})
-
-        if stop_reason == "end_turn":
-            # テキストを結合して JSON を抽出
-            text = "".join(
-                b.get("text", "") for b in content if b.get("type") == "text"
-            )
-            result = _extract_json(text)
-            if result:
-                log.info(
-                    "  API 結果: deadline=%s, conf=%s〜%s, location=%s, confidence=%s",
-                    result.get("deadline"), result.get("confDate"),
-                    result.get("confDateEnd"), result.get("location"),
-                    result.get("confidence"),
-                )
-            else:
-                log.warning("  JSON 抽出失敗。レスポンス: %s", text[:300])
-            return result
-
-        elif stop_reason == "tool_use":
-            # tool_use ブロックごとに tool_result を作成
-            tool_results = []
-            for block in content:
-                if block.get("type") == "tool_use":
-                    tool_results.append({
-                        "type":        "tool_result",
-                        "tool_use_id": block["id"],
-                        "content":     "",  # web_search は Anthropic サーバーが処理
-                    })
-
-            if not tool_results:
-                log.warning("  tool_use ブロックが空。ループ終了。")
+    # 開催地: "Location:", "Venue:", "City," などのパターン
+    loc_pat = re.compile(
+        r"(venue|location|city|held\s+in|taking\s+place)[:\s]+([^\n]{3,60})",
+        re.I
+    )
+    for line in lines:
+        m = loc_pat.search(line)
+        if m:
+            loc = m.group(2).strip().rstrip(".,")
+            if len(loc) > 3 and loc.lower() not in ("tbd", "tba", "n/a"):
+                result["location"] = loc
                 break
 
-            messages.append({"role": "user", "content": tool_results})
-            log.debug("  → tool_result %d 件を返して継続", len(tool_results))
+    return result
 
-        elif stop_reason == "max_tokens":
-            log.warning("  max_tokens に達しました。")
-            break
-        else:
-            log.warning("  予期しない stop_reason: %s", stop_reason)
-            break
+
+def fetch_from_official(official_cfp_url: str, base_url: str) -> dict:
+    """公式 CFP ページをスクレイピング。失敗時はトップページを試みる。"""
+    for url in [official_cfp_url, base_url]:
+        soup = _safe_get(url)
+        if soup is None:
+            continue
+        info = _extract_dates_from_soup(soup)
+        if info.get("deadline"):
+            log.info("    公式サイトから取得: %s → deadline=%s", url, info["deadline"])
+            return info
+    return {}
+
+
+# ─────────────────────────────────────────────────────────────
+# Source 2: WikiCFP
+# ─────────────────────────────────────────────────────────────
+
+def fetch_from_wikicfp(abbr: str, wikicfp_query: str, base_url: str) -> dict:
+    """WikiCFP 検索ページをスクレイピング。"""
+    url = f"https://www.wikicfp.com/cfp/search?q={requests.utils.quote(wikicfp_query)}&year=f"
+    soup = _safe_get(url, timeout=10)
+    if soup is None:
+        return {}
+
+    abbr_key = abbr.lower().replace("ieee ", "")
+    best = {}
+
+    # WikiCFP の結果テーブルをパース
+    for table in soup.find_all("table", attrs={"cellpadding": "3"}):
+        rows = table.find_all("tr")
+        i = 0
+        while i < len(rows) - 1:
+            r1, r2 = rows[i], rows[i + 1]
+            cols1 = r1.find_all("td")
+            cols2 = r2.find_all("td")
+
+            if len(cols1) < 2 or len(cols2) < 4:
+                i += 1
+                continue
+
+            link     = cols1[0].find("a")
+            row_abbr = (link.get_text(strip=True) if link else cols1[0].get_text(strip=True)).lower()
+            row_abbr = row_abbr.replace("ieee ", "")
+
+            entry = {
+                "deadline":    parse_date(cols2[0].get_text(strip=True)),
+                "notification": parse_date(cols2[1].get_text(strip=True)),
+                "confDate":    parse_date(cols2[2].get_text(strip=True)),
+                "confDateEnd": parse_date(cols2[3].get_text(strip=True)),
+                "location":    cols2[4].get_text(strip=True) if len(cols2) >= 5 else None,
+                "url":         base_url,
+            }
+
+            if abbr_key in row_abbr or row_abbr in abbr_key:
+                log.info("    WikiCFP ヒット: %s | deadline=%s", row_abbr, entry["deadline"])
+                return entry  # 完全一致
+            if not best and entry.get("deadline"):
+                best = entry   # 最初のヒットを保持
+
+            i += 2
+
+    if best:
+        log.info("    WikiCFP 先頭使用: deadline=%s", best.get("deadline"))
+    return best
+
+
+# ─────────────────────────────────────────────────────────────
+# Source 3: conference2go.net
+# ─────────────────────────────────────────────────────────────
+
+def fetch_from_c2g(abbr: str, query: str, base_url: str) -> dict:
+    """conference2go.net をスクレイピング（WikiCFP の代替）。"""
+    search_url = f"https://www.conference2go.net/search?q={requests.utils.quote(query)}"
+    soup = _safe_get(search_url, timeout=10)
+    if soup is None:
+        return {}
+
+    abbr_key = abbr.lower().replace("ieee ", "")
+
+    for card in soup.find_all(["div", "li", "article"], class_=re.compile(r"conf|event|result", re.I)):
+        title = card.get_text(separator=" ", strip=True).lower()
+        if abbr_key not in title:
+            continue
+
+        # カード内から日付文字列を探す
+        card_text = card.get_text(separator="\n")
+        lines = card_text.splitlines()
+        dates = [(parse_date(l), l) for l in lines if parse_date(l)]
+
+        entry = {"deadline": None, "confDate": None, "location": None, "url": base_url}
+        for d, raw in dates:
+            if not entry["deadline"]:
+                entry["deadline"] = d
+            elif not entry["confDate"]:
+                entry["confDate"] = d
+
+        # 開催地
+        loc_m = re.search(r"\b([A-Z][a-z]+(?: [A-Z][a-z]+)?,\s*[A-Z][a-z]+)\b", card_text)
+        if loc_m:
+            entry["location"] = loc_m.group(1)
+
+        if entry.get("deadline"):
+            log.info("    C2G ヒット: deadline=%s", entry["deadline"])
+            return entry
 
     return {}
 
 
-# ─────────────────────────────────────────────
-# ユーティリティ
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
+# メイン処理（優先順位: 公式 → WikiCFP → C2G → 既存データ）
+# ─────────────────────────────────────────────────────────────
 
-def _apply_info(entry: dict, info: dict) -> None:
-    """info の値を entry に適用（None/空文字列はスキップ）。"""
-    for field in ("deadline", "notification", "confDate", "confDateEnd"):
-        raw = info.get(field)
-        if raw:
-            entry[field] = parse_date(str(raw)) or raw
-    if info.get("location"):
-        entry["location"] = info["location"]
+def _apply(entry: dict, info: dict) -> None:
+    """info の値を entry に適用する（既存値は上書きしない）。"""
+    for f in ("deadline", "notification", "confDate", "confDateEnd"):
+        if info.get(f) and not entry.get(f):
+            entry[f] = info[f]
+    if info.get("location") and (not entry.get("location") or entry["location"] == "TBD"):
+        loc = info["location"]
+        if loc and loc.lower() not in ("n/a", "tbd", "tba", ""):
+            entry["location"] = loc
     if info.get("url"):
         entry["url"] = info["url"]
 
-
-# ─────────────────────────────────────────────
-# 1件の会議を処理
-# ─────────────────────────────────────────────
 
 def process_conference(target: dict, existing: dict) -> dict:
     abbr = target["abbr"]
@@ -404,26 +480,38 @@ def process_conference(target: dict, existing: dict) -> dict:
         "fetched_at":   now,
     }
 
-    # ── Step 1: Claude API + web_search ──────────────────────
-    info = fetch_conference_info(abbr, target["search_query"])
-    if info:
-        _apply_info(entry, info)
-        entry["data_source"] = "api_search"
+    # ── 1. 公式サイト ────────────────────────────────────────
+    info = fetch_from_official(target["official_cfp"], target["base_url"])
+    if info.get("deadline"):
+        _apply(entry, info)
+        entry["data_source"] = "official"
+        log.info("  ✓ 公式: deadline=%s", entry["deadline"])
 
-    # ── Step 2: 既存データで欠損フィールドを補完 ──────────────
+    # ── 2. WikiCFP ───────────────────────────────────────────
+    if not entry.get("deadline"):
+        info = fetch_from_wikicfp(abbr, target["wikicfp_query"], target["base_url"])
+        if info.get("deadline"):
+            _apply(entry, info)
+            entry["data_source"] = "wikicfp"
+            log.info("  ✓ WikiCFP: deadline=%s", entry["deadline"])
+
+    # ── 3. conference2go.net ─────────────────────────────────
+    if not entry.get("deadline"):
+        info = fetch_from_c2g(abbr, target["c2g_query"], target["base_url"])
+        if info.get("deadline"):
+            _apply(entry, info)
+            entry["data_source"] = "c2g"
+            log.info("  ✓ C2G: deadline=%s", entry["deadline"])
+
+    # ── 4. 既存データで補完 ──────────────────────────────────
     old = existing.get(abbr, {})
-    for field in ("deadline", "notification", "confDate", "confDateEnd",
-                  "location", "url", "full"):
-        if not entry.get(field) and old.get(field) and old[field] != "TBD":
-            entry[field] = old[field]
-            log.info("  補完 [%s] ← 既存: %s", field, old[field])
+    for f in ("deadline", "notification", "confDate", "confDateEnd", "location", "url"):
+        if not entry.get(f) and old.get(f):
+            entry[f] = old[f]
+            log.info("  補完 [%s] ← 既存: %s", f, old[f])
 
     return entry
 
-
-# ─────────────────────────────────────────────
-# メイン
-# ─────────────────────────────────────────────
 
 def main() -> None:
     log.info("======== 会議情報取得開始 (%d 件) ========", len(TARGET_CONFERENCES))
@@ -445,33 +533,24 @@ def main() -> None:
         try:
             entry = process_conference(target, existing)
             conferences.append(entry)
-            log.info("  完了: deadline=%s, location=%s",
-                     entry["deadline"], entry["location"])
+            log.info("  完了: src=%-10s deadline=%s  loc=%s",
+                     entry["data_source"], entry["deadline"], entry["location"])
         except Exception as e:
             log.error("  エラー: %s", e)
-            old_entry = existing.get(target["abbr"])
-            conferences.append(old_entry if old_entry else {
-                "abbr":         target["abbr"],
-                "full":         target["full"],
-                "url":          target["base_url"],
-                "area":         target["area"],
-                "location":     None,
-                "confDate":     None,
-                "confDateEnd":  None,
-                "deadline":     None,
-                "notification": None,
-                "data_source":  "error",
-                "fetched_at":   datetime.now(timezone.utc).isoformat(),
+            conferences.append(existing.get(target["abbr"]) or {
+                **{k: target.get(k) for k in ("abbr","full","area")},
+                "url": target["base_url"],
+                "location": None, "confDate": None, "confDateEnd": None,
+                "deadline": None, "notification": None,
+                "data_source": "error", "fetched_at": now,
             })
+        time.sleep(1)  # サーバー負荷軽減
 
-        time.sleep(2)
-
-    output = {
-        "updated_at":  datetime.now(timezone.utc).isoformat(),
-        "conferences": conferences,
-    }
     output_path.write_text(
-        json.dumps(output, ensure_ascii=False, indent=2),
+        json.dumps({
+            "updated_at":  datetime.now(timezone.utc).isoformat(),
+            "conferences": conferences,
+        }, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     log.info("======== 完了: %d 件 → %s ========", len(conferences), output_path)
