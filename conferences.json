@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-19T05:28:40.922484+00:00",
+  "updated_at": "2026-04-19T09:01:27.543937+00:00",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
@@ -11,9 +11,8 @@
       "confDateEnd": "2026-12-11",
       "deadline": null,
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:02.913145+00:00"
+      "fetched_at": "2026-04-19T08:54:08.873320+00:00"
     },
     {
       "abbr": "IEEE WCNC",
@@ -25,9 +24,8 @@
       "confDateEnd": "2026-04-16",
       "deadline": "2025-09-14",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:04.913759+00:00"
+      "fetched_at": "2026-04-19T08:54:32.088649+00:00"
     },
     {
       "abbr": "IEEE ICC",
@@ -39,9 +37,8 @@
       "confDateEnd": "2026-05-28",
       "deadline": "2025-11-10",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:06.914352+00:00"
+      "fetched_at": "2026-04-19T08:54:55.139347+00:00"
     },
     {
       "abbr": "IEEE INFOCOM",
@@ -53,9 +50,8 @@
       "confDateEnd": "2026-05-21",
       "deadline": "2025-07-24",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:08.914849+00:00"
+      "fetched_at": "2026-04-19T08:55:18.236978+00:00"
     },
     {
       "abbr": "IEEE VTC",
@@ -67,9 +63,8 @@
       "confDateEnd": "2026-09-09",
       "deadline": "2026-02-14",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:10.915358+00:00"
+      "fetched_at": "2026-04-19T08:55:41.365333+00:00"
     },
     {
       "abbr": "IEEE PIMRC",
@@ -81,9 +76,8 @@
       "confDateEnd": "2026-09-04",
       "deadline": "2026-03-16",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:12.915949+00:00"
+      "fetched_at": "2026-04-19T08:56:04.387285+00:00"
     },
     {
       "abbr": "IEEE IV",
@@ -95,9 +89,8 @@
       "confDateEnd": "2026-06-25",
       "deadline": "2025-11-15",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:14.916482+00:00"
+      "fetched_at": "2026-04-19T08:56:27.411058+00:00"
     },
     {
       "abbr": "IEEE VNC",
@@ -109,9 +102,8 @@
       "confDateEnd": "2026-06-10",
       "deadline": "2026-01-16",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:16.916962+00:00"
+      "fetched_at": "2026-04-19T08:56:50.486677+00:00"
     },
     {
       "abbr": "IEEE ITSC",
@@ -123,9 +115,8 @@
       "confDateEnd": null,
       "deadline": null,
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:18.917527+00:00"
+      "fetched_at": "2026-04-19T08:57:13.587245+00:00"
     },
     {
       "abbr": "ITS World Congress",
@@ -137,9 +128,8 @@
       "confDateEnd": "2026-10-23",
       "deadline": "2026-01-31",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:20.917887+00:00"
+      "fetched_at": "2026-04-19T08:57:36.649157+00:00"
     },
     {
       "abbr": "IEEE GCCE",
@@ -151,9 +141,8 @@
       "confDateEnd": "2026-10-29",
       "deadline": "2026-05-11",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:22.918368+00:00"
+      "fetched_at": "2026-04-19T08:57:59.713555+00:00"
     },
     {
       "abbr": "IEEE WFIoT",
@@ -165,9 +154,8 @@
       "confDateEnd": null,
       "deadline": null,
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:24.918825+00:00"
+      "fetched_at": "2026-04-19T08:58:22.790646+00:00"
     },
     {
       "abbr": "IEEE CCNC",
@@ -179,9 +167,8 @@
       "confDateEnd": "2026-01-12",
       "deadline": "2025-07-01",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:26.919249+00:00"
+      "fetched_at": "2026-04-19T08:58:45.938984+00:00"
     },
     {
       "abbr": "IEEE CTW",
@@ -193,9 +180,8 @@
       "confDateEnd": "2026-05-20",
       "deadline": "2026-01-09",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:28.919740+00:00"
+      "fetched_at": "2026-04-19T08:59:08.994708+00:00"
     },
     {
       "abbr": "APCC",
@@ -207,9 +193,8 @@
       "confDateEnd": null,
       "deadline": null,
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:30.920241+00:00"
+      "fetched_at": "2026-04-19T08:59:32.019582+00:00"
     },
     {
       "abbr": "ICOIN",
@@ -221,9 +206,8 @@
       "confDateEnd": "2026-01-16",
       "deadline": "2025-10-24",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:32.920636+00:00"
+      "fetched_at": "2026-04-19T08:59:55.074017+00:00"
     },
     {
       "abbr": "WPMC",
@@ -235,9 +219,8 @@
       "confDateEnd": null,
       "deadline": null,
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:34.921119+00:00"
+      "fetched_at": "2026-04-19T09:00:18.271358+00:00"
     },
     {
       "abbr": "ICETC",
@@ -249,9 +232,8 @@
       "confDateEnd": "2026-11-25",
       "deadline": null,
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:36.921543+00:00"
+      "fetched_at": "2026-04-19T09:00:41.282331+00:00"
     },
     {
       "abbr": "ICNC",
@@ -263,9 +245,8 @@
       "confDateEnd": "2026-02-19",
       "deadline": "2025-08-05",
       "notification": null,
-      "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-19T05:28:38.921984+00:00"
+      "fetched_at": "2026-04-19T09:01:04.419164+00:00"
     }
   ]
 }
