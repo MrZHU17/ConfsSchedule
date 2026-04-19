@@ -1,117 +1,117 @@
 {
-  "updated_at": "2026-04-17T14:30:33.261892Z",
+  "updated_at": "2026-04-19T04:32:01.116791+00:00",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
       "full": "IEEE Global Communications Conference",
-      "url": "https://globecom2026.ieee-globecom.org/",
+      "url": "https://globecom2026.ieee-globecom.org",
       "area": "Communications",
-      "location": "Macao, China",
+      "location": "TBD",
       "confDate": "2026-12-07",
       "confDateEnd": "2026-12-11",
       "deadline": null,
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:28:24.476806Z"
+      "fetched_at": "2026-04-19T04:31:21.457171+00:00"
     },
     {
       "abbr": "IEEE WCNC",
       "full": "IEEE Wireless Communications and Networking Conference",
-      "url": "https://wcnc2026.ieee-wcnc.org/",
+      "url": "https://wcnc2026.ieee-wcnc.org",
       "area": "Wireless",
-      "location": "Kuala Lumpur, Malaysia",
+      "location": "TBD",
       "confDate": "2026-04-13",
       "confDateEnd": "2026-04-16",
       "deadline": "2025-09-14",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.381008Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:23.548716+00:00"
     },
     {
       "abbr": "IEEE ICC",
       "full": "IEEE International Conference on Communications",
-      "url": "https://icc2026.ieee-icc.org/",
+      "url": "https://icc2026.ieee-icc.org",
       "area": "Communications",
-      "location": "Glasgow, UK",
+      "location": "TBD",
       "confDate": "2026-05-24",
       "confDateEnd": "2026-05-28",
       "deadline": "2025-11-10",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.382546Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:25.605456+00:00"
     },
     {
       "abbr": "IEEE INFOCOM",
       "full": "IEEE International Conference on Computer Communications",
-      "url": "https://infocom2026.ieee-infocom.org/",
+      "url": "https://infocom2026.ieee-infocom.org",
       "area": "Networking",
-      "location": "Tokyo, Japan",
+      "location": "TBD",
       "confDate": "2026-05-18",
       "confDateEnd": "2026-05-21",
       "deadline": "2025-07-24",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.383956Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:27.717741+00:00"
     },
     {
       "abbr": "IEEE VTC",
       "full": "IEEE Vehicular Technology Conference",
-      "url": "https://events.vtsociety.org/vtc2026-fall/",
+      "url": "https://events.vtsociety.org/vtc2026-fall",
       "area": "V2X / 5G",
-      "location": "Boston, USA",
+      "location": "TBD",
       "confDate": "2026-09-06",
       "confDateEnd": "2026-09-09",
       "deadline": "2026-02-14",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.384938Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:29.786497+00:00"
     },
     {
       "abbr": "IEEE PIMRC",
       "full": "IEEE Int. Symposium on Personal, Indoor and Mobile Radio Communications",
-      "url": "https://pimrc2026.ieee-pimrc.org/",
+      "url": "https://pimrc2026.ieee-pimrc.org",
       "area": "Wireless",
-      "location": "Singapore",
+      "location": "TBD",
       "confDate": "2026-09-01",
       "confDateEnd": "2026-09-04",
       "deadline": "2026-03-16",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.386094Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:31.841850+00:00"
     },
     {
       "abbr": "IEEE IV",
       "full": "IEEE Intelligent Vehicles Symposium",
-      "url": "https://ieee-iv.org/2026/",
+      "url": "https://iv2026.ieee-iv.org",
       "area": "ITS / V2X",
-      "location": "Detroit, MI, United States",
+      "location": "TBD",
       "confDate": "2026-06-22",
       "confDateEnd": "2026-06-25",
       "deadline": "2025-11-15",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.387092Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:33.899766+00:00"
     },
     {
       "abbr": "IEEE VNC",
       "full": "IEEE Vehicular Networking Conference",
-      "url": "https://vnc2026.ieee-vnc.org/",
+      "url": "https://vnc2026.ieee-vnc.org",
       "area": "V2X / Networking",
-      "location": "Montreal, Canada",
+      "location": "TBD",
       "confDate": "2026-06-08",
       "confDateEnd": "2026-06-10",
       "deadline": "2026-01-16",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:28:47.388121Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:35.977159+00:00"
     },
     {
       "abbr": "IEEE ITSC",
@@ -125,35 +125,35 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:28:47.389766Z"
+      "fetched_at": "2026-04-19T04:31:38.033634+00:00"
     },
     {
       "abbr": "ITS World Congress",
       "full": "ITS World Congress",
-      "url": "https://2026itsworldcongress.org/ITS/120002/index.do",
+      "url": "https://2026itsworldcongress.org",
       "area": "ITS",
-      "location": "Gangneung Olympic Park, Korea",
+      "location": "TBD",
       "confDate": "2026-10-19",
       "confDateEnd": "2026-10-23",
       "deadline": "2026-01-31",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:29:35.145708Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:40.094086+00:00"
     },
     {
       "abbr": "IEEE GCCE",
       "full": "IEEE Global Conference on Consumer Electronics",
-      "url": "https://www.ieee-gcce.org/2026/",
+      "url": "https://www.ieee-gcce.org/2026",
       "area": "Consumer Electronics",
-      "location": "Kobe, Japan",
+      "location": "TBD",
       "confDate": "2026-10-26",
       "confDateEnd": "2026-10-29",
       "deadline": "2026-05-11",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:29:35.147061Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:42.148859+00:00"
     },
     {
       "abbr": "IEEE WFIoT",
@@ -167,35 +167,35 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:29:35.148318Z"
+      "fetched_at": "2026-04-19T04:31:44.558660+00:00"
     },
     {
       "abbr": "IEEE CCNC",
       "full": "IEEE Consumer Communications and Networking Conference",
-      "url": "https://ccnc2026.ieee-ccnc.org/",
+      "url": "https://ccnc2027.ieee-ccnc.org",
       "area": "Consumer / Networking",
-      "location": "Las Vegas, USA",
+      "location": "TBD",
       "confDate": "2026-01-09",
       "confDateEnd": "2026-01-12",
       "deadline": "2025-07-01",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:29:51.756708Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:46.621111+00:00"
     },
     {
       "abbr": "IEEE CTW",
       "full": "IEEE Communication Theory Workshop",
-      "url": "https://www.comsoc.org/conferences-events/ieee-communication-theory-workshop-2026",
+      "url": "https://ctw2026.ieee-ctw.org",
       "area": "Theory",
-      "location": "São Miguel Azores Portugal",
+      "location": "TBD",
       "confDate": "2026-05-17",
       "confDateEnd": "2026-05-20",
       "deadline": "2026-01-09",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:29:51.758215Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:48.677478+00:00"
     },
     {
       "abbr": "APCC",
@@ -209,21 +209,21 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:29:51.759939Z"
+      "fetched_at": "2026-04-19T04:31:50.731597+00:00"
     },
     {
       "abbr": "ICOIN",
       "full": "International Conference on Information Networking",
-      "url": "https://icoin.org/",
+      "url": "https://www.icoin.org",
       "area": "Networking",
-      "location": "Hanoi, Vietnam",
+      "location": "TBD",
       "confDate": "2026-01-14",
       "confDateEnd": "2026-01-16",
       "deadline": "2025-10-24",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:30:15.140713Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:52.785919+00:00"
     },
     {
       "abbr": "WPMC",
@@ -237,35 +237,35 @@
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:30:15.142696Z"
+      "fetched_at": "2026-04-19T04:31:54.921312+00:00"
     },
     {
       "abbr": "ICETC",
       "full": "Int. Conference on Emerging Technologies for Communications",
-      "url": "https://www.ieice.org/cs/icetc/",
+      "url": "https://www.ieice.org/cs/icetc/2026",
       "area": "Emerging Tech",
-      "location": "Taipei, Taiwan",
+      "location": "TBD",
       "confDate": "2026-11-23",
       "confDateEnd": "2026-11-25",
       "deadline": null,
       "notification": null,
       "source": null,
       "data_source": "none",
-      "fetched_at": "2026-04-17T14:30:19.049820Z"
+      "fetched_at": "2026-04-19T04:31:57.005477+00:00"
     },
     {
       "abbr": "ICNC",
       "full": "Int. Conference on Computing, Networking and Communications",
-      "url": "http://www.conf-icnc.org/2026/",
+      "url": "https://www.conf-icnc.org/2027",
       "area": "Networking",
-      "location": "Maui, Hawaii, USA",
+      "location": "TBD",
       "confDate": "2026-02-16",
       "confDateEnd": "2026-02-19",
       "deadline": "2025-08-05",
       "notification": null,
-      "source": "http://katayama.nuee.nagoya-u.ac.jp/schedule/schedule_ic.php",
-      "data_source": "nagoya",
-      "fetched_at": "2026-04-17T14:30:33.260051Z"
+      "source": null,
+      "data_source": "none",
+      "fetched_at": "2026-04-19T04:31:59.061627+00:00"
     }
   ]
 }
