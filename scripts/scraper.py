@@ -1,11 +1,12 @@
 """
-Conference Tracker Scraper  v11
+Conference Tracker Scraper  v12
 ================================
-改修内容:
-  - Claude API による高精度テキスト解析を追加
-  - WikiCFP パーサーを class ベースで堅牢化
-  - 公式サイト抽出: テーブル構造対応 + Claude 判定
-  - override キー整合性チェック追加
+修正内容:
+  - override JSON の trailing comma を自動修正して読み込む
+  - location バリデーション強化（文章・ゴミ文字列を除外）
+  - deadline 妥当性チェック（過去すぎ・未来すぎを棄却）
+  - _apply() の location フィルタリング強化
+  - notification が deadline と同値で過去の場合は棄却
 """
 
 import json, re, time, logging, os
@@ -24,7 +25,6 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# Claude API が使用可能かチェック
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 USE_CLAUDE = bool(ANTHROPIC_API_KEY)
 if USE_CLAUDE:
@@ -43,10 +43,10 @@ SESSION.headers.update({
 })
 
 # ─────────────────────────────────────────────────────────────
-# 会議リスト（変更なし）
+# 会議リスト
 # ─────────────────────────────────────────────────────────────
 TARGET_CONFERENCES = [
-     {
+    {
         "abbr": "IEEE GLOBECOM",
         "full": "IEEE Global Communications Conference",
         "area": "Communications",
@@ -220,7 +220,7 @@ TARGET_CONFERENCES = [
 ]
 
 # ─────────────────────────────────────────────────────────────
-# 日付パーサー（変更なし）
+# 日付パーサー
 # ─────────────────────────────────────────────────────────────
 MONTH_MAP = {
     "jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,
@@ -265,25 +265,73 @@ def _safe_get(url: str, timeout: int = 12) -> BeautifulSoup | None:
 
 
 # ─────────────────────────────────────────────────────────────
-# ★ 新機能: Claude API による日付抽出
+# ★ location バリデーション用パターン（共通）
 # ─────────────────────────────────────────────────────────────
+_BAD_LOCATION = re.compile(
+    r"(researchers|present|exchange|conducted|vibrant|innovative"
+    r"|capital of the|will be|& Travel|cfp|register"
+    r"|for\s+\w+-\d{4}|proceedings|submitted|accepted"
+    r"|authors|sponsors|committee|program)",
+    re.I
+)
 
+def _is_valid_location(loc: str) -> bool:
+    """
+    地名として妥当かどうかを判定する。
+    - 空・TBD 系: False
+    - 単語数が多すぎる（文章）: False
+    - ゴミキーワードを含む: False
+    - 極端に短い: False
+    """
+    if not loc:
+        return False
+    loc = loc.strip().rstrip(".,;!")
+    if loc.lower() in ("tbd", "tba", "n/a", ""):
+        return False
+    if len(loc) < 3 or len(loc) > 60:
+        return False
+    if len(loc.split()) > 7:
+        return False
+    if _BAD_LOCATION.search(loc):
+        return False
+    return True
+
+
+# ─────────────────────────────────────────────────────────────
+# ★ deadline 妥当性チェック
+# ─────────────────────────────────────────────────────────────
+def _is_valid_deadline(date_str: str | None) -> bool:
+    """
+    deadline として妥当な日付かどうかを判定する。
+    - 現在から 2年以上過去: False（古いデータを誤取得）
+    - 現在から 4年以上未来: False（明らかに誤取得）
+    """
+    if not date_str:
+        return False
+    try:
+        dl = datetime.fromisoformat(date_str)
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
+        years_past   = (now - dl).days / 365
+        years_future = (dl - now).days / 365
+        if years_past > 2:
+            log.warning("    deadline が古すぎるため棄却: %s (%.1f年前)", date_str, years_past)
+            return False
+        if years_future > 4:
+            log.warning("    deadline が遠すぎるため棄却: %s (%.1f年後)", date_str, years_future)
+            return False
+        return True
+    except Exception:
+        return False
+
+
+# ─────────────────────────────────────────────────────────────
+# Claude API による日付抽出
+# ─────────────────────────────────────────────────────────────
 def extract_with_claude(page_text: str, conf_name: str) -> dict:
-    """
-    Claude API にページテキストを送り、構造化データを抽出する。
-    
-    正規表現では対応困難な以下のケースを解決:
-    - テーブル形式の日付 (HTML テーブルを平坦化した場合に行距離が大きくなる)
-    - "Submission: March 15 (Extended from Feb 28)" のような複雑な表記
-    - 多言語ページ
-    """
     try:
         import anthropic
         client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-
-        # トークン節約のため 4000 文字に制限
         truncated = page_text[:4000]
-
         prompt = f"""You are extracting conference scheduling information from a CFP (Call for Papers) page.
 Conference: {conf_name}
 
@@ -295,7 +343,7 @@ Fields:
 - "notification": author notification / acceptance notification date (YYYY-MM-DD)
 - "confDate": first day of the conference (YYYY-MM-DD)
 - "confDateEnd": last day of the conference (YYYY-MM-DD)
-- "location": city and country of the venue (string, e.g. "Tokyo, Japan")
+- "location": city and country of the venue only (string, e.g. "Tokyo, Japan"). Must be a location name, NOT a sentence.
 
 Use null for any field you cannot find with confidence.
 
@@ -303,31 +351,33 @@ Text:
 {truncated}"""
 
         resp = client.messages.create(
-            model="claude-haiku-4-5",   # 速度・コスト優先
+            model="claude-haiku-4-5",
             max_tokens=300,
             messages=[{"role": "user", "content": prompt}],
         )
         raw = resp.content[0].text.strip()
-        # マークダウンコードブロックを除去
         raw = re.sub(r"^```json\s*|^```\s*|\s*```$", "", raw, flags=re.M).strip()
         result = json.loads(raw)
+
+        # location バリデーション
+        if result.get("location") and not _is_valid_location(result["location"]):
+            log.warning("    Claude 抽出 location が不正なためクリア: %s", result["location"])
+            result["location"] = None
+
         log.info("    Claude 抽出: deadline=%s  loc=%s",
                  result.get("deadline"), result.get("location"))
         return result
-
     except Exception as e:
         log.warning("    Claude 抽出失敗: %s", e)
         return {}
 
 
 # ─────────────────────────────────────────────────────────────
-# ★ 改訂: 公式サイトスクレイピング
+# 公式サイト スクレイピング
 # ─────────────────────────────────────────────────────────────
-
-# キーワードパターン（変更なし）
 _DEADLINE_KEYWORDS = re.compile(
     r"(paper\s+submission|submission\s+deadline|manuscript\s+due"
-    r"|abstract\s+deadline|full\s+paper|camera[- ]ready)",
+    r"|abstract\s+deadline|full\s+paper(?!\s+camera)|camera[- ]ready)",
     re.I
 )
 _NOTIF_KEYWORDS = re.compile(
@@ -342,14 +392,6 @@ _CONF_KEYWORDS = re.compile(
 
 
 def _extract_dates_regex(soup: BeautifulSoup) -> dict:
-    """
-    正規表現による日付抽出（Claude API 不使用時のフォールバック）。
-    
-    v10 からの改善点:
-    - テーブルセルのキーワード→同一行/隣接セルの日付を優先探索
-    - 近接距離を 3→8 行に拡大
-    - <dl>/<dt>/<dd> 構造にも対応
-    """
     result = {
         "deadline": None, "notification": None,
         "confDate": None, "confDateEnd": None, "location": None,
@@ -362,7 +404,7 @@ def _extract_dates_regex(soup: BeautifulSoup) -> dict:
             if len(cells) < 2:
                 continue
             label = cells[0].lower()
-            value = cells[-1]  # 最後のセルが値のことが多い
+            value = cells[-1]
             date  = parse_date(value)
             if not date:
                 continue
@@ -373,7 +415,7 @@ def _extract_dates_regex(soup: BeautifulSoup) -> dict:
             elif _CONF_KEYWORDS.search(label) and not result["confDate"]:
                 result["confDate"] = date
 
-    # ── <dl> / <dt><dd> 構造から探す ────────────────────
+    # ── <dl>/<dt>/<dd> 構造から探す ─────────────────────
     for dl in soup.find_all("dl"):
         dts = dl.find_all("dt")
         dds = dl.find_all("dd")
@@ -387,7 +429,7 @@ def _extract_dates_regex(soup: BeautifulSoup) -> dict:
             elif _NOTIF_KEYWORDS.search(label) and not result["notification"]:
                 result["notification"] = date
 
-    # ── テキスト行スキャン（近接距離を拡大）────────────
+    # ── テキスト行スキャン ────────────────────────────────
     if not result["deadline"]:
         text  = soup.get_text(separator="\n")
         lines = [l.strip() for l in text.splitlines() if l.strip()]
@@ -405,7 +447,7 @@ def _extract_dates_regex(soup: BeautifulSoup) -> dict:
         result["notification"] = result["notification"] or nearest(_NOTIF_KEYWORDS)
         result["confDate"]     = result["confDate"]     or nearest(_CONF_KEYWORDS)
 
-    # ── 開催地 ──────────────────────────────────────────
+    # ── 開催地（バリデーション強化版）───────────────────
     loc_pat = re.compile(
         r"(?:venue|location|city|held\s+in|taking\s+place\s+in)[:\s]+([^\n<]{4,60})",
         re.I
@@ -413,8 +455,16 @@ def _extract_dates_regex(soup: BeautifulSoup) -> dict:
     for elem in soup.find_all(string=loc_pat):
         m = loc_pat.search(str(elem))
         if m:
-            loc = m.group(1).strip().rstrip(".,;")
-            if loc.lower() not in ("tbd", "tba", "n/a", ""):
+            # コンマや空白で切って最初の意味のある部分だけ取る
+            raw_loc = m.group(1).strip()
+            # 余分な後続テキストを除去（"Tokyo, Japan and will be..." → "Tokyo, Japan"）
+            # 都市名,国名 のパターンに絞る
+            city_country = re.match(
+                r"([A-Z][a-zA-Z\s\'\-\.]+(?:,\s*[A-Z][a-zA-Z\s]+)?)",
+                raw_loc
+            )
+            loc = city_country.group(1).strip().rstrip(".,;!") if city_country else raw_loc
+            if _is_valid_location(loc):
                 result["location"] = loc
                 break
 
@@ -422,16 +472,10 @@ def _extract_dates_regex(soup: BeautifulSoup) -> dict:
 
 
 def fetch_from_official(conf_name: str, official_cfp_url: str, base_url: str) -> dict:
-    """
-    公式 CFP ページをスクレイピング。
-    Claude API が使える場合は Claude で抽出、なければ正規表現を使用。
-    """
     for url in [official_cfp_url, base_url]:
         soup = _safe_get(url)
         if soup is None:
             continue
-
-        # スクリプト・スタイルタグを除去してテキストを清潔にする
         for tag in soup(["script", "style", "nav", "footer", "header"]):
             tag.decompose()
         page_text = soup.get_text(separator="\n", strip=True)
@@ -441,6 +485,11 @@ def fetch_from_official(conf_name: str, official_cfp_url: str, base_url: str) ->
         else:
             info = _extract_dates_regex(soup)
 
+        # deadline の妥当性チェック
+        if info.get("deadline") and not _is_valid_deadline(info["deadline"]):
+            log.warning("    公式サイト deadline 棄却: %s", info["deadline"])
+            info["deadline"] = None
+
         if info.get("deadline"):
             log.info("    公式サイトから取得: %s → deadline=%s", url, info["deadline"])
             return info
@@ -449,18 +498,9 @@ def fetch_from_official(conf_name: str, official_cfp_url: str, base_url: str) ->
 
 
 # ─────────────────────────────────────────────────────────────
-# ★ 改訂: WikiCFP パーサー
+# WikiCFP パーサー
 # ─────────────────────────────────────────────────────────────
-
 def fetch_from_wikicfp(abbr: str, wikicfp_query: str, base_url: str) -> dict:
-    """
-    WikiCFP 検索ページをスクレイピング。
-    
-    v10 からの改善点:
-    - even/odd クラスで行ペアを確実に識別（i+=2 方式を廃止）
-    - N/A 日付を None として処理
-    - 部分一致スコアリングで最良候補を選択
-    """
     url = (
         "https://www.wikicfp.com/cfp/search"
         f"?q={requests.utils.quote(wikicfp_query)}&year=f"
@@ -472,16 +512,14 @@ def fetch_from_wikicfp(abbr: str, wikicfp_query: str, base_url: str) -> dict:
     abbr_key = abbr.lower().replace("ieee ", "").replace(" ", "")
     candidates = []
 
-    # WikiCFP の結果行: class="even" または class="odd" の <tr> が2行1セット
     rows = soup.find_all("tr", class_=re.compile(r"^(even|odd)$"))
-    
+
     i = 0
     while i < len(rows) - 1:
         r1, r2 = rows[i], rows[i + 1]
         cells1 = r1.find_all("td")
         cells2 = r2.find_all("td")
 
-        # r1: [名前/リンク, フルネーム]  r2: [締切, 通知, 開始, 終了, 場所]
         if len(cells1) < 1 or len(cells2) < 4:
             i += 1
             continue
@@ -504,7 +542,6 @@ def fetch_from_wikicfp(abbr: str, wikicfp_query: str, base_url: str) -> dict:
             "_row_abbr":    row_abbr,
         }
 
-        # スコアリング: 完全一致 > 片方が他方を含む > 部分一致
         if row_key == abbr_key:
             score = 3
         elif row_key in abbr_key or abbr_key in row_key:
@@ -514,23 +551,26 @@ def fetch_from_wikicfp(abbr: str, wikicfp_query: str, base_url: str) -> dict:
         else:
             score = 0
 
-        if score > 0 and entry.get("deadline"):
+        dl_valid = entry.get("deadline") and _is_valid_deadline(entry["deadline"])
+        if score > 0 and dl_valid:
             candidates.append((score, entry))
 
-        i += 2  # WikiCFP は必ず 2行1セット
+        i += 2
 
     if not candidates:
         return {}
 
     best = max(candidates, key=lambda x: x[0])[1]
+    # WikiCFP の location も バリデーション
+    if best.get("location") and not _is_valid_location(best["location"]):
+        best["location"] = None
     log.info("    WikiCFP ヒット: %s | deadline=%s", best["_row_abbr"], best["deadline"])
     return best
 
 
 # ─────────────────────────────────────────────────────────────
-# Source 3: conference2go.net（変更なし）
+# conference2go.net
 # ─────────────────────────────────────────────────────────────
-
 def fetch_from_c2g(abbr: str, query: str, base_url: str) -> dict:
     search_url = f"https://www.conference2go.net/search?q={requests.utils.quote(query)}"
     soup = _safe_get(search_url, timeout=10)
@@ -558,9 +598,12 @@ def fetch_from_c2g(abbr: str, query: str, base_url: str) -> dict:
 
         loc_m = re.search(r"\b([A-Z][a-z]+(?: [A-Z][a-z]+)?,\s*[A-Z][a-z]+)\b", card_text)
         if loc_m:
-            entry["location"] = loc_m.group(1)
+            loc = loc_m.group(1)
+            if _is_valid_location(loc):
+                entry["location"] = loc
 
-        if entry.get("deadline"):
+        dl_valid = entry.get("deadline") and _is_valid_deadline(entry["deadline"])
+        if dl_valid:
             log.info("    C2G ヒット: deadline=%s", entry["deadline"])
             return entry
 
@@ -568,17 +611,20 @@ def fetch_from_c2g(abbr: str, query: str, base_url: str) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────
-# メイン処理
+# メイン処理ユーティリティ
 # ─────────────────────────────────────────────────────────────
-
 def _apply(entry: dict, info: dict) -> None:
+    """
+    スクレイプ結果を entry に適用する。
+    空フィールドのみ補完し、location は厳格にバリデーションする。
+    """
     for f in ("deadline", "notification", "confDate", "confDateEnd"):
         if info.get(f) and not entry.get(f):
             entry[f] = info[f]
     if info.get("location"):
-        loc = info["location"]
-        if loc and loc.lower() not in ("n/a", "tbd", "tba", ""):
-            if not entry.get("location") or entry["location"] == "TBD":
+        loc = info["location"].strip().rstrip(".,;!")
+        if _is_valid_location(loc):
+            if not entry.get("location") or entry["location"] in (None, "TBD", ""):
                 entry["location"] = loc
     if info.get("url"):
         entry["url"] = info["url"]
@@ -629,26 +675,46 @@ def process_conference(target: dict, existing: dict) -> dict:
     old = existing.get(abbr, {})
     for f in ("deadline", "notification", "confDate", "confDateEnd", "location", "url"):
         if not entry.get(f) and old.get(f):
+            # 既存の deadline も妥当性チェック
+            if f == "deadline" and not _is_valid_deadline(old.get(f)):
+                log.info("  既存 deadline が無効のためスキップ: %s", old.get(f))
+                continue
             entry[f] = old[f]
             log.info("  補完 [%s] ← 既存: %s", f, old[f])
+
+    # ── 5. notification が deadline と同値で過去の場合はクリア ─
+    if entry.get("notification") == entry.get("deadline"):
+        if entry.get("notification") and not _is_valid_deadline(entry["notification"]):
+            log.info("  notification を deadline と同値の無効値のためクリア: %s", entry["notification"])
+            entry["notification"] = None
 
     return entry
 
 
 # ─────────────────────────────────────────────────────────────
-# ★ 修正: 手動オーバーライド（キー整合性チェック追加）
+# 手動オーバーライド
 # ─────────────────────────────────────────────────────────────
-
 def load_overrides() -> dict[str, dict]:
     override_path = REPO_ROOT / "conferences.override.json"
     if not override_path.exists():
         log.info("override ファイルなし（スキップ）")
         return {}
     try:
-        raw = json.loads(override_path.read_text(encoding="utf-8"))
+        text = override_path.read_text(encoding="utf-8")
+        try:
+            raw = json.loads(text)
+        except json.JSONDecodeError as first_err:
+            # trailing comma を自動修正してリトライ
+            text_fixed = re.sub(r",\s*([}\]])", r"\1", text)
+            try:
+                raw = json.loads(text_fixed)
+                log.warning("override: trailing comma を自動修正して読み込みました")
+            except json.JSONDecodeError:
+                log.error("override ファイルの JSON が修正後も不正です: %s", first_err)
+                return {}
+
         overrides = {k: v for k, v in raw.items() if not k.startswith("_")}
 
-        # ★ キー整合性チェック: TARGET_CONFERENCES の abbr と照合
         valid_abbrs = {t["abbr"] for t in TARGET_CONFERENCES}
         for key in list(overrides.keys()):
             if key not in valid_abbrs:
@@ -660,9 +726,6 @@ def load_overrides() -> dict[str, dict]:
 
         log.info("override 読み込み: %d 件", len(overrides))
         return overrides
-    except json.JSONDecodeError as e:
-        log.error("override ファイルの JSON が不正です: %s", e)
-        return {}
     except Exception as e:
         log.warning("override 読み込み失敗: %s", e)
         return {}
@@ -670,7 +733,7 @@ def load_overrides() -> dict[str, dict]:
 
 def apply_override(entry: dict, overrides: dict) -> dict:
     abbr  = entry.get("abbr", "")
-    patch = overrides.get(abbr)   # ★ abbr で直接参照（年付きキーは使わない）
+    patch = overrides.get(abbr)
     if not patch:
         return entry
 
@@ -690,6 +753,9 @@ def apply_override(entry: dict, overrides: dict) -> dict:
     return entry
 
 
+# ─────────────────────────────────────────────────────────────
+# エントリーポイント
+# ─────────────────────────────────────────────────────────────
 def main() -> None:
     log.info("======== 会議情報取得開始 (%d 件) ========", len(TARGET_CONFERENCES))
 
@@ -728,7 +794,7 @@ def main() -> None:
             }
             fallback = apply_override(fallback, overrides)
             conferences.append(fallback)
-        time.sleep(1.5)  # 少し余裕を持たせる
+        time.sleep(1.5)
 
     output_path.write_text(
         json.dumps({
