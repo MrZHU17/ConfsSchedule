@@ -7,87 +7,81 @@
     "location": "Macao, China"
   },
   "IEEE INFOCOM": {
-  "deadline": "2026-05-03",
-  "confDate": "2026-09-20",
-  "confDateEnd": "2026-09-23",
-  "location": "Macao, China"
+    "deadline": "2026-05-03",
+    "confDate": "2026-09-20",
+    "confDateEnd": "2026-09-23",
+    "location": "Macao, China"
   },
   "IEEE WCNC": {
-  "deadline": "2026-10-26",
-  "confDate": "2026-04-13",
-  "confDateEnd": "2026-04-16",
-  "location": "Kuala Lumpur, Malaysia"
+    "deadline": "2026-10-26",
+    "confDate": "2026-04-13",
+    "confDateEnd": "2026-04-16",
+    "location": "Kuala Lumpur, Malaysia"
   },
   "IEEE ICC": {
-  "deadline": "2025-10-31",
-  "confDate": "2026-09-20",
-  "confDateEnd": "2026-09-23",
-  "location": "Glasgow, Scotland,"
+    "deadline": "2025-10-31",
+    "confDate": "2026-09-20",
+    "confDateEnd": "2026-09-23",
+    "location": "Glasgow, Scotland"
   },
   "IEEE ITSC": {
-  "deadline": "2026-03-01",
-  "confDate": "2026-05-24",
-  "confDateEnd": "2026-05-28",
-  "location": "Naples, Italy"
+    "deadline": "2026-03-01",
+    "confDate": "2026-05-24",
+    "confDateEnd": "2026-05-28",
+    "location": "Naples, Italy"
   },
   "IEEE IV": {
-  "deadline": "2026-11-15",
-  "confDate": "2026-06-15",
-  "confDateEnd": "2026-06-18",
-  "location": "Perth, Western Australia"
+    "deadline": "2026-11-15",
+    "confDate": "2026-06-15",
+    "confDateEnd": "2026-06-18",
+    "location": "Perth, Western Australia"
   },
   "IEEE VTC": {
-  "deadline": "2026-03-21",
-  "confDate": "2026-09-06",
-  "confDateEnd": "2026-09-09",
-  "location": "Boston, MA, USA"
-  },
-  "IEEE APWCS": {
-  "deadline": "2026-06-01",
-  "confDate": "2026-08-12",
-  "confDateEnd": "2026-08-14",
-  "location": "Seoul, Korea"
+    "deadline": "2026-03-21",
+    "confDate": "2026-09-06",
+    "confDateEnd": "2026-09-09",
+    "location": "Boston, MA, USA"
   },
   "IEEE CCNC": {
-  "deadline": "2026-07-01",
-  "confDate": "2027-01-09",
-  "confDateEnd": "2027-01-12",
-  "location": "Las Vegas, NV, USA"
+    "deadline": "2026-07-01",
+    "confDate": "2027-01-09",
+    "confDateEnd": "2027-01-12",
+    "location": "Las Vegas, NV, USA"
   },
   "IEEE PIMRC": {
-  "deadline": "2026-02-15",
-  "confDate": "2026-09-01",
-  "confDateEnd": "2026-09-04",
-  "location": "Singapore"
+    "deadline": "2026-02-15",
+    "confDate": "2026-09-01",
+    "confDateEnd": "2026-09-04",
+    "location": "Singapore"
   },
-  "IEEE WF-IoT": {
+  "IEEE WFIoT": {
     "deadline": "2026-05-15",
     "confDate": "2026-10-26",
     "confDateEnd": "2026-10-29",
     "location": "Abu Dhabi, United Arab Emirates"
   },
-  "Asia-Pacific Conference on Communications (APCC)": {
-  "deadline": "2026-05-03",
-  "confDate": "2026-11-10",
-  "confDateEnd": "2026-11-12",
-  "location": "Xi'an, China"
+  "APCC": {
+    "deadline": "2026-05-03",
+    "confDate": "2026-11-10",
+    "confDateEnd": "2026-11-12",
+    "location": "Xi'an, China"
   },
-  "International Conference on Information Networking (ICOIN)": {
-  "deadline": "2025-10-24",
-  "confDate": "2026-01-14",
-  "confDateEnd": "2026-01-16",
-  "location": "Hanoi, Vietnam"
+  "ICOIN": {
+    "deadline": "2025-10-24",
+    "confDate": "2026-01-14",
+    "confDateEnd": "2026-01-16",
+    "location": "Hanoi, Vietnam"
   },
-  "International Conference on Computing, Networking and Communication (ICNC)": {
-  "deadline": "2025-10-12",
-  "confDate": "2026-02-16",
-  "confDateEnd": "2026-02-19",
-  "location": "Maui, Hawaii, USA"
+  "ICNC": {
+    "deadline": "2025-10-12",
+    "confDate": "2026-02-16",
+    "confDateEnd": "2026-02-19",
+    "location": "Maui, Hawaii, USA"
   },
-  "IEEE Global Conference on Consumer Electronics (GCCE)": {
-  "deadline": "2026-05-11",
-  "confDate": "2026-09-26",
-  "confDateEnd": "2026-09-29",
-  "location": "Kobe, Japan"
-  },
+  "IEEE GCCE": {
+    "deadline": "2026-05-11",
+    "confDate": "2026-09-26",
+    "confDateEnd": "2026-09-29",
+    "location": "Kobe, Japan"
+  }
 }
