@@ -1,85 +1,215 @@
 {
-  "_comment": "手動修正ファイル。abbr フィールドの値をキーとして使用すること。スクレイパーが誤取得・未取得の値をここで正しく設定する。",
+  "_comment": [
+    "★ このファイルが唯一の正式データソースです。",
+    "★ deadline が設定されている会議はスクレイピングを完全にスキップします。",
+    "★ 編集方法: abbr をキーにして各フィールドを記入。不明な項目は null のままにしてください。",
+    "★ フィールド一覧: deadline, notification, confDate, confDateEnd, location, url, full, area"
+  ],
+
   "IEEE GLOBECOM": {
+    "full": "IEEE Global Communications Conference",
+    "area": "Communications",
+    "url": "https://globecom2026.ieee-globecom.org",
     "deadline": "2026-05-03",
+    "notification": null,
     "confDate": "2026-12-08",
     "confDateEnd": "2026-12-11",
     "location": "Macao, China"
   },
+
   "IEEE WCNC": {
+    "full": "IEEE Wireless Communications and Networking Conference",
+    "area": "Wireless",
+    "url": "https://wcnc2026.ieee-wcnc.org",
     "deadline": "2026-10-26",
+    "notification": null,
     "confDate": "2026-04-13",
     "confDateEnd": "2026-04-16",
     "location": "Kuala Lumpur, Malaysia"
   },
+
   "IEEE ICC": {
+    "full": "IEEE International Conference on Communications",
+    "area": "Communications",
+    "url": "https://icc2026.ieee-icc.org",
     "deadline": "2025-10-31",
+    "notification": null,
     "confDate": "2026-06-08",
     "confDateEnd": "2026-06-12",
     "location": "Glasgow, Scotland"
   },
+
   "IEEE INFOCOM": {
+    "full": "IEEE International Conference on Computer Communications",
+    "area": "Networking",
+    "url": "https://infocom2026.ieee-infocom.org",
     "deadline": "2026-05-03",
+    "notification": "2025-07-24",
     "confDate": "2026-09-20",
     "confDateEnd": "2026-09-23",
     "location": "Macao, China"
   },
+
   "IEEE VTC": {
+    "full": "IEEE Vehicular Technology Conference",
+    "area": "V2X / 5G",
+    "url": "https://events.vtsociety.org/vtc2026-fall",
     "deadline": "2026-03-21",
+    "notification": "2026-04-25",
     "confDate": "2026-09-06",
     "confDateEnd": "2026-09-09",
     "location": "Boston, MA, USA"
   },
+
   "IEEE PIMRC": {
+    "full": "IEEE Int. Symposium on Personal, Indoor and Mobile Radio Communications",
+    "area": "Wireless",
+    "url": "https://pimrc2026.ieee-pimrc.org",
     "deadline": "2026-02-15",
+    "notification": "2026-02-15",
     "confDate": "2026-09-01",
     "confDateEnd": "2026-09-04",
     "location": "Singapore"
   },
+
   "IEEE IV": {
+    "full": "IEEE Intelligent Vehicles Symposium",
+    "area": "ITS / V2X",
+    "url": "https://iv2026.ieee-iv.org",
     "deadline": "2026-11-15",
+    "notification": null,
     "confDate": "2026-06-15",
     "confDateEnd": "2026-06-18",
     "location": "Perth, Western Australia"
   },
+
+  "IEEE VNC": {
+    "full": "IEEE Vehicular Networking Conference",
+    "area": "V2X / Networking",
+    "url": "https://vnc2026.ieee-vnc.org",
+    "deadline": "2026-04-16",
+    "notification": "2026-04-16",
+    "confDate": null,
+    "confDateEnd": null,
+    "location": null
+  },
+
   "IEEE ITSC": {
+    "full": "IEEE Int. Conference on Intelligent Transportation Systems",
+    "area": "ITS",
+    "url": "https://ieee-itsc.org/2026",
     "deadline": "2026-03-01",
+    "notification": "2026-03-01",
     "confDate": "2026-09-15",
     "confDateEnd": "2026-09-18",
     "location": "Naples, Italy"
   },
+
+  "ITS World Congress": {
+    "full": "ITS World Congress",
+    "area": "ITS",
+    "url": "https://2026itsworldcongress.org",
+    "deadline": null,
+    "notification": null,
+    "confDate": null,
+    "confDateEnd": null,
+    "location": null
+  },
+
   "IEEE GCCE": {
+    "full": "IEEE Global Conference on Consumer Electronics",
+    "area": "Consumer Electronics",
+    "url": "https://www.ieee-gcce.org/2026",
     "deadline": "2026-05-11",
+    "notification": "2026-03-09",
     "confDate": "2026-10-26",
     "confDateEnd": "2026-10-29",
     "location": "Kobe, Japan"
   },
+
   "IEEE WFIoT": {
+    "full": "IEEE World Forum on Internet of Things",
+    "area": "IoT",
+    "url": "https://wfiot2026.iot.ieee.org",
     "deadline": "2026-05-15",
+    "notification": "2026-05-15",
     "confDate": "2026-10-26",
     "confDateEnd": "2026-10-29",
     "location": "Abu Dhabi, UAE"
   },
+
   "IEEE CCNC": {
+    "full": "IEEE Consumer Communications and Networking Conference",
+    "area": "Consumer / Networking",
+    "url": "https://ccnc2027.ieee-ccnc.org",
     "deadline": "2026-07-01",
+    "notification": "2026-07-01",
     "confDate": "2027-01-09",
     "confDateEnd": "2027-01-12",
     "location": "Las Vegas, NV, USA"
   },
+
+  "IEEE CTW": {
+    "full": "IEEE Communication Theory Workshop",
+    "area": "Theory",
+    "url": "https://ctw2026.ieee-ctw.org",
+    "deadline": "2026-03-10",
+    "notification": "2026-03-10",
+    "confDate": null,
+    "confDateEnd": null,
+    "location": null
+  },
+
   "APCC": {
+    "full": "Asia-Pacific Conference on Communications",
+    "area": "Asia-Pacific",
+    "url": "https://apcc2026.org",
     "deadline": "2026-05-03",
+    "notification": null,
     "confDate": "2026-11-10",
     "confDateEnd": "2026-11-12",
     "location": "Xi'an, China"
   },
+
   "ICOIN": {
+    "full": "International Conference on Information Networking",
+    "area": "Networking",
+    "url": "https://www.icoin.org",
     "deadline": "2025-10-24",
+    "notification": null,
     "confDate": "2026-01-14",
     "confDateEnd": "2026-01-16",
     "location": "Hanoi, Vietnam"
   },
+
+  "WPMC": {
+    "full": "Int. Symposium on Wireless Personal Multimedia Communications",
+    "area": "Wireless",
+    "url": "https://www.wpmc-conf.org/2026",
+    "deadline": null,
+    "notification": null,
+    "confDate": null,
+    "confDateEnd": null,
+    "location": null
+  },
+
+  "ICETC": {
+    "full": "Int. Conference on Emerging Technologies for Communications",
+    "area": "Emerging Tech",
+    "url": "https://www.ieice.org/cs/icetc/2026",
+    "deadline": null,
+    "notification": null,
+    "confDate": null,
+    "confDateEnd": null,
+    "location": null
+  },
+
   "ICNC": {
+    "full": "Int. Conference on Computing, Networking and Communications",
+    "area": "Networking",
+    "url": "https://www.conf-icnc.org/2027",
     "deadline": "2025-10-12",
+    "notification": null,
     "confDate": "2026-02-16",
     "confDateEnd": "2026-02-19",
     "location": "Maui, Hawaii, USA"
