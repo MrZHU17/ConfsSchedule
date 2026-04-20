@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - 'scripts/scraper.py'
+      - 'conferences.override.json'
 
 jobs:
   update:
@@ -26,6 +27,27 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4
 
+      - name: Validate override JSON
+        run: |
+          python - <<'EOF'
+          import json, re, sys
+          path = "conferences.override.json"
+          text = open(path).read()
+          try:
+              json.loads(text)
+              print("override JSON: OK")
+          except json.JSONDecodeError as e:
+              # trailing comma の自動修正を試みる
+              fixed = re.sub(r",\s*([}\]])", r"\1", text)
+              try:
+                  json.loads(fixed)
+                  print("override JSON: trailing comma を自動修正して OK")
+                  open(path, "w").write(fixed)
+              except json.JSONDecodeError as e2:
+                  print(f"override JSON: 修正不能なエラー: {e2}", file=sys.stderr)
+                  sys.exit(1)
+          EOF
+
       - name: Run scraper
         run: python scripts/scraper.py
         env:
@@ -40,9 +62,6 @@ jobs:
 
           git commit -m "chore: update conferences.json [$(date -u '+%Y-%m-%d')]"
 
-          # リモートに先行コミットがある場合は fetch して rebase
-          # conferences.json はスクレイパーが毎回完全生成するので
-          # コンフリクト時は常にローカル側（新しく生成した版）を採用する
           git fetch origin master
           if ! git rebase -X ours origin/master; then
             git checkout --ours conferences.json
