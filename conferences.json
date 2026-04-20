@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-20T05:20:07.030895+00:00",
+  "updated_at": "2026-04-20T05:50:45.204227+00:00",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
@@ -9,10 +9,10 @@
       "location": "Macao, China",
       "confDate": "2026-09-20",
       "confDateEnd": "2026-09-23",
-      "deadline": "2026-05-03",
+      "deadline": "2026-12-11",
       "notification": null,
-      "data_source": "official+override",
-      "fetched_at": "2026-04-20T05:17:52.153795+00:00"
+      "data_source": "official",
+      "fetched_at": "2026-04-20T05:48:22.612595+00:00"
     },
     {
       "abbr": "IEEE WCNC",
@@ -25,7 +25,7 @@
       "deadline": "2026-04-16",
       "notification": "2025-02-28",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:17:55.291550+00:00"
+      "fetched_at": "2026-04-20T05:48:24.849575+00:00"
     },
     {
       "abbr": "IEEE ICC",
@@ -38,7 +38,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:17:57.504758+00:00"
+      "fetched_at": "2026-04-20T05:48:26.626601+00:00"
     },
     {
       "abbr": "IEEE INFOCOM",
@@ -51,7 +51,7 @@
       "deadline": "2025-07-24",
       "notification": "2025-07-24",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:18:10.992733+00:00"
+      "fetched_at": "2026-04-20T05:48:39.560938+00:00"
     },
     {
       "abbr": "IEEE VTC",
@@ -64,7 +64,7 @@
       "deadline": "2026-04-25",
       "notification": "2026-04-25",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:18:13.158434+00:00"
+      "fetched_at": "2026-04-20T05:48:41.359292+00:00"
     },
     {
       "abbr": "IEEE PIMRC",
@@ -77,7 +77,7 @@
       "deadline": "2026-02-15",
       "notification": "2026-02-15",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:18:17.002575+00:00"
+      "fetched_at": "2026-04-20T05:48:43.158002+00:00"
     },
     {
       "abbr": "IEEE IV",
@@ -90,7 +90,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:18:20.240533+00:00"
+      "fetched_at": "2026-04-20T05:48:45.244303+00:00"
     },
     {
       "abbr": "IEEE VNC",
@@ -103,7 +103,7 @@
       "deadline": "2026-04-16",
       "notification": "2026-04-16",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:18:32.233372+00:00"
+      "fetched_at": "2026-04-20T05:48:57.002622+00:00"
     },
     {
       "abbr": "IEEE ITSC",
@@ -115,8 +115,8 @@
       "confDateEnd": "2026-09-18",
       "deadline": "2026-03-01",
       "notification": "2026-03-01",
-      "data_source": "official+override",
-      "fetched_at": "2026-04-20T05:18:35.587416+00:00"
+      "data_source": "official",
+      "fetched_at": "2026-04-20T05:48:59.144828+00:00"
     },
     {
       "abbr": "ITS World Congress",
@@ -129,7 +129,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:18:40.294867+00:00"
+      "fetched_at": "2026-04-20T05:49:03.313153+00:00"
     },
     {
       "abbr": "IEEE GCCE",
@@ -142,20 +142,20 @@
       "deadline": "2026-03-09",
       "notification": "2026-03-09",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:18:53.420964+00:00"
+      "fetched_at": "2026-04-20T05:49:15.968275+00:00"
     },
     {
       "abbr": "IEEE WFIoT",
       "full": "IEEE World Forum on Internet of Things",
       "url": "https://wfiot2026.iot.ieee.org",
       "area": "IoT",
-      "location": "Abu Dhabi, United Arab Emirates",
+      "location": "the vibrant and innovative capital of the UAE, WF-IoT 2026 w",
       "confDate": "2026-10-26",
       "confDateEnd": "2026-10-29",
       "deadline": "2026-05-15",
       "notification": "2026-05-15",
-      "data_source": "official+override",
-      "fetched_at": "2026-04-20T05:18:56.176384+00:00"
+      "data_source": "official",
+      "fetched_at": "2026-04-20T05:49:18.502734+00:00"
     },
     {
       "abbr": "IEEE CCNC",
@@ -168,7 +168,7 @@
       "deadline": "2026-07-01",
       "notification": "2026-07-01",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:18:58.833251+00:00"
+      "fetched_at": "2026-04-20T05:49:20.533797+00:00"
     },
     {
       "abbr": "IEEE CTW",
@@ -181,7 +181,7 @@
       "deadline": "2026-03-10",
       "notification": "2026-03-10",
       "data_source": "official",
-      "fetched_at": "2026-04-20T05:19:01.431499+00:00"
+      "fetched_at": "2026-04-20T05:49:22.822809+00:00"
     },
     {
       "abbr": "APCC",
@@ -194,7 +194,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:19:03.617687+00:00"
+      "fetched_at": "2026-04-20T05:49:24.542502+00:00"
     },
     {
       "abbr": "ICOIN",
@@ -207,7 +207,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:19:16.217658+00:00"
+      "fetched_at": "2026-04-20T05:49:36.927417+00:00"
     },
     {
       "abbr": "WPMC",
@@ -220,7 +220,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:19:29.204634+00:00"
+      "fetched_at": "2026-04-20T05:49:49.695950+00:00"
     },
     {
       "abbr": "ICETC",
@@ -233,7 +233,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:19:41.001634+00:00"
+      "fetched_at": "2026-04-20T05:50:18.523497+00:00"
     },
     {
       "abbr": "ICNC",
@@ -246,7 +246,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "none",
-      "fetched_at": "2026-04-20T05:19:54.822563+00:00"
+      "fetched_at": "2026-04-20T05:50:33.165108+00:00"
     }
   ]
 }
