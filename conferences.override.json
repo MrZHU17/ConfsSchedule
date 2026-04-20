@@ -7,6 +7,7 @@
   ],
 
   "IEEE GLOBECOM": {
+    "society": "ComSoc",
     "full": "IEEE Global Communications Conference",
     "area": "Communications",
     "url": "https://globecom2026.ieee-globecom.org",
@@ -18,6 +19,7 @@
   },
 
   "IEEE WCNC": {
+    "society": "ComSoc",
     "full": "IEEE Wireless Communications and Networking Conference",
     "area": "Wireless",
     "url": "https://wcnc2026.ieee-wcnc.org",
@@ -29,6 +31,7 @@
   },
 
   "IEEE ICC": {
+    "society": "ComSoc",
     "full": "IEEE International Conference on Communications",
     "area": "Communications",
     "url": "https://icc2026.ieee-icc.org",
@@ -40,6 +43,7 @@
   },
 
   "IEEE INFOCOM": {
+    "society": "ComSoc",
     "full": "IEEE International Conference on Computer Communications",
     "area": "Networking",
     "url": "https://infocom2026.ieee-infocom.org",
@@ -51,6 +55,7 @@
   },
 
   "IEEE VTC": {
+    "society": "VTS",
     "full": "IEEE Vehicular Technology Conference",
     "area": "V2X / 5G / IoT",
     "url": "https://events.vtsociety.org/vtc2026-fall",
@@ -62,6 +67,7 @@
   },
   
   "IEEE VTS Asia Pacific Wireless Communications Symposium (APWCS)": {
+  "society": "VTS",
   "full": "IEEE Vehicular Technology Conference",
   "area": "V2X / 5G / IoT",
   "url": "https://apwcs2026.org/index.html",
@@ -73,6 +79,7 @@
 },
 
   "IEEE PIMRC": {
+    "society": "ComSoc",
     "full": "IEEE Int. Symposium on Personal, Indoor and Mobile Radio Communications",
     "area": "Wireless",
     "url": "https://pimrc2026.ieee-pimrc.org",
@@ -84,6 +91,7 @@
   },
 
   "IEEE IV": {
+    "society": "ITSS",
     "full": "IEEE Intelligent Vehicles Symposium",
     "area": "ITS / V2X",
     "url": "https://ieee-iv.org/2027/",
@@ -94,6 +102,7 @@
     "location": "Perth, Western Australia"
   },
   "IEEE ITSC": {
+    "society": "ITSS",
     "full": "IEEE Int. Conference on Intelligent Transportation Systems",
     "area": "ITS",
     "url": "https://ieee-itsc.org/2026",
@@ -104,6 +113,7 @@
     "location": "Naples, Italy"
   },
   "IEEE VNC": {
+    "society": "ITSS",
     "full": "IEEE Vehicular Networking Conference",
     "area": "V2X / Networking",
     "url": "https://vnc2026.ieee-vnc.org",
@@ -114,6 +124,7 @@
     "location": "Montreal, Canada"
   },
   "ITS World Congress": {
+    "society": "Other",
     "full": "ITS World Congress",
     "area": "ITS",
     "url": "https://2026itsworldcongress.org",
@@ -125,6 +136,7 @@
   },
 
   "IEEE GCCE": {
+    "society": "CTSoc",
     "full": "IEEE Global Conference on Consumer Electronics",
     "area": "Consumer Electronics",
     "url": "https://www.ieee-gcce.org/2026",
@@ -136,6 +148,7 @@
   },
 
   "IEEE WF-IoT": {
+    "society": "Other",
     "full": "IEEE World Forum on Internet of Things",
     "area": "IoT",
     "url": "https://wfiot2026.iot.ieee.org",
@@ -147,6 +160,7 @@
   },
 
   "IEEE CCNC": {
+    "society": "CTSoc",
     "full": "IEEE Consumer Communications and Networking Conference",
     "area": "Consumer / Networking",
     "url": "https://ccnc2027.ieee-ccnc.org",
@@ -158,6 +172,7 @@
   },
 
   "IEEE Communication Theory Workshop (CTW)": {
+    "society": "ComSoc",
     "full": "IEEE Communication Theory Workshop",
     "area": "Theory",
     "url": "https://ctw2026.ieee-ctw.org",
@@ -169,6 +184,7 @@
   },
 
   "Asia-Pacific Conference on Communications (APCC)": {
+    "society": "Other",
     "full": "Asia-Pacific Conference on Communications",
     "area": "Asia-Pacific",
     "url": "https://apcc2026.org",
@@ -180,6 +196,7 @@
   },
 
   "International Conference on Information Networking (ICOIN)": {
+    "society": "Computer Society",
     "full": "International Conference on Information Networking",
     "area": "Networking",
     "url": "https://www.icoin.org",
@@ -191,6 +208,7 @@
   },
 
   "International Symposium on Wireless Personal Multimedia Communications (WPMC)": {
+    "society": "Other",
     "full": "Int. Symposium on Wireless Personal Multimedia Communications",
     "area": "Wireless",
     "url": "https://wpmc.imd.ufrn.br/",
@@ -202,6 +220,7 @@
   },
 
   "International Conference on Emerging Technologies for Communications (ICETC)": {
+    "society": "Other",
     "full": "Int. Conference on Emerging Technologies for Communications",
     "area": "Emerging Tech",
     "url": "https://www.ieice.org/cs/icetc/2026",
@@ -213,6 +232,7 @@
   },
 
   "International Conference on Computing, Networking and Communication (ICNC)": {
+    "society": "ComSoc",
     "full": "Int. Conference on Computing, Networking and Communications",
     "area": "Networking",
     "url": "https://www.conf-icnc.org/2027",
