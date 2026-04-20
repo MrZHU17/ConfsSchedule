@@ -30,9 +30,9 @@
     --ctsoc-bg:      #f5eefb;
     --ctsoc-header:  #e3cfF4;
 
-    --iot-accent:    #b07800;
-    --iot-bg:        #fdf6e3;
-    --iot-header:    #f5e4a8;
+    --cs-accent:     #1256aa;
+    --cs-bg:         #eef2fb;
+    --cs-header:     #ccd9f0;
 
     --other-accent:  #555550;
     --other-bg:      #f3f2ef;
@@ -78,9 +78,9 @@
       --ctsoc-bg:      #1e0b2c;
       --ctsoc-header:  #280f3a;
 
-      --iot-accent:    #e0b840;
-      --iot-bg:        #221a00;
-      --iot-header:    #2e2300;
+      --cs-accent:     #5b8de0;
+      --cs-bg:         #0d1a33;
+      --cs-header:     #122244;
 
       --other-accent:  #aaa9a3;
       --other-bg:      #252524;
@@ -208,14 +208,14 @@
   .society-block.VTS    .society-header { background: var(--vts-header);    color: var(--vts-accent);    }
   .society-block.ITSS   .society-header { background: var(--itss-header);   color: var(--itss-accent);   }
   .society-block.CTSoc  .society-header { background: var(--ctsoc-header);  color: var(--ctsoc-accent);  }
-  .society-block.IoT    .society-header { background: var(--iot-header);    color: var(--iot-accent);    }
+  .society-block.Computer-Society .society-header { background: var(--cs-header); color: var(--cs-accent); }
   .society-block.Other  .society-header { background: var(--other-header);  color: var(--other-accent);  }
 
   .society-block.ComSoc { border-color: var(--comsoc-accent); border-opacity: 0.3; }
   .society-block.VTS    { border-color: var(--vts-accent); }
   .society-block.ITSS   { border-color: var(--itss-accent); }
   .society-block.CTSoc  { border-color: var(--ctsoc-accent); }
-  .society-block.IoT    { border-color: var(--iot-accent); }
+  .society-block.Computer-Society { border-color: var(--cs-accent); }
   .society-block.Other  { border-color: var(--other-accent); }
 
   /* ── Card Grid ── */
@@ -349,11 +349,11 @@ const SOCIETIES = [
     url: 'https://ctsoc.ieee.org',
   },
   {
-    key: 'IoT',
-    label: 'IEEE IoT Technical Community',
-    abbr: 'IoT Initiative',
-    dot: '#b07800',
-    url: 'https://iot.ieee.org',
+    key: 'Computer Society',
+    label: 'IEEE Computer Society',
+    abbr: 'CS',
+    dot: '#1256aa',
+    url: 'https://www.computer.org',
   },
   {
     key: 'Other',
@@ -471,13 +471,14 @@ function render() {
     const confs = byKey[soc.key];
     if (!confs || confs.length === 0) return;
 
+    const safeKey = soc.key.replace(/\s+/g, "-");
     const isCollapsed = collapsedState[soc.key] ? 'collapsed' : '';
     const titleLink = soc.url
       ? `<a href="${soc.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${soc.label}</a>`
       : soc.label;
 
     html += `
-    <div class="society-block ${soc.key} ${isCollapsed}" id="block-${soc.key}">
+    <div class="society-block ${safeKey} ${isCollapsed}" id="block-${safeKey}">
       <div class="society-header" onclick="toggleBlock('${soc.key}')">
         <span class="society-dot" style="background:${soc.dot}"></span>
         <span class="society-title">${titleLink}</span>
