@@ -299,6 +299,7 @@ def main() -> None:
 
         entry = {
             "abbr":         abbr,
+            "society":      ov.get("society", "Other"),
             "full":         ov.get("full", ""),
             "area":         ov.get("area", ""),
             "url":          ov.get("url", ""),
