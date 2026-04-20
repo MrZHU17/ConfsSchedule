@@ -1,17 +1,44 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>国际会议追踪</title>
+<title>国際会議追跡</title>
 <style>
   :root {
     --bg: #f8f8f6;
     --card-bg: #ffffff;
     --text: #1a1a18;
     --muted: #6b6b66;
-    --border: rgba(0,0,0,0.1);
-    --border-hover: rgba(0,0,0,0.2);
+    --border: rgba(0,0,0,0.08);
+    --border-hover: rgba(0,0,0,0.18);
+
+    /* Society block colors */
+    --comsoc-accent: #0057a8;
+    --comsoc-bg:     #eef4fb;
+    --comsoc-header: #d0e4f7;
+
+    --vts-accent:    #c4420a;
+    --vts-bg:        #fdf1ec;
+    --vts-header:    #f9d9cb;
+
+    --itss-accent:   #1a7f3e;
+    --itss-bg:       #ecf7f0;
+    --itss-header:   #c6e8d4;
+
+    --ctsoc-accent:  #7c2fa8;
+    --ctsoc-bg:      #f5eefb;
+    --ctsoc-header:  #e3cfF4;
+
+    --iot-accent:    #b07800;
+    --iot-bg:        #fdf6e3;
+    --iot-header:    #f5e4a8;
+
+    --other-accent:  #555550;
+    --other-bg:      #f3f2ef;
+    --other-header:  #e2e0d8;
+
+    /* Status */
     --info-bg: #e6f1fb;
     --info-text: #0c447c;
     --urgent-bg: #fcebeb;
@@ -22,16 +49,43 @@
     --ok-text: #3b6d11;
     --passed-bg: #f1efe8;
     --passed-text: #5f5e5a;
-    --radius: 12px;
+
+    --radius: 10px;
   }
+
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #1c1c1a;
       --card-bg: #252523;
       --text: #e8e6df;
       --muted: #9b9990;
-      --border: rgba(255,255,255,0.1);
-      --border-hover: rgba(255,255,255,0.2);
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+
+      --comsoc-accent: #5b9bd5;
+      --comsoc-bg:     #0d1f33;
+      --comsoc-header: #112844;
+
+      --vts-accent:    #e8845c;
+      --vts-bg:        #2a1208;
+      --vts-header:    #3a1a0c;
+
+      --itss-accent:   #5ec887;
+      --itss-bg:       #0a2016;
+      --itss-header:   #0f2d1e;
+
+      --ctsoc-accent:  #c07ee0;
+      --ctsoc-bg:      #1e0b2c;
+      --ctsoc-header:  #280f3a;
+
+      --iot-accent:    #e0b840;
+      --iot-bg:        #221a00;
+      --iot-header:    #2e2300;
+
+      --other-accent:  #aaa9a3;
+      --other-bg:      #252524;
+      --other-header:  #2e2e2c;
+
       --info-bg: #042c53;
       --info-text: #85b7eb;
       --urgent-bg: #501313;
@@ -44,6 +98,7 @@
       --passed-text: #888780;
     }
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
@@ -52,22 +107,24 @@
     min-height: 100vh;
     padding: 2rem 1.5rem;
   }
-  .container { max-width: 1100px; margin: 0 auto; }
+  .container { max-width: 1120px; margin: 0 auto; }
 
+  /* ── Header ── */
   header { margin-bottom: 2rem; }
-  header h1 { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.3rem; }
-  header p { font-size: 0.85rem; color: var(--muted); }
-  .updated { font-size: 0.78rem; color: var(--muted); margin-top: 0.25rem; }
+  header h1 { font-size: 1.55rem; font-weight: 700; margin-bottom: 0.3rem; }
+  header p  { font-size: 0.84rem; color: var(--muted); }
+  .updated  { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; }
 
+  /* ── Controls ── */
   .controls {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
   }
   .filter-btn {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     padding: 5px 14px;
     border-radius: 20px;
     border: 1px solid var(--border);
@@ -76,15 +133,12 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .filter-btn:hover { border-color: var(--border-hover); color: var(--text); }
-  .filter-btn.active {
-    background: var(--info-bg);
-    color: var(--info-text);
-    border-color: transparent;
-  }
+  .filter-btn:hover  { border-color: var(--border-hover); color: var(--text); }
+  .filter-btn.active { background: var(--info-bg); color: var(--info-text); border-color: transparent; }
+
   .sort-wrap { margin-left: auto; }
   .sort-wrap select {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     padding: 5px 10px;
     border-radius: 8px;
     border: 1px solid var(--border);
@@ -93,7 +147,7 @@
     cursor: pointer;
   }
   .search-wrap input {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     padding: 5px 12px;
     border-radius: 8px;
     border: 1px solid var(--border);
@@ -105,80 +159,132 @@
   }
   .search-wrap input:focus { border-color: var(--border-hover); }
 
+  /* ── Society Block ── */
+  .society-block {
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+  }
+
+  .society-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.7rem 1.1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .society-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .society-title { font-size: 0.88rem; font-weight: 700; }
+  .society-subtitle { font-size: 0.74rem; opacity: 0.75; margin-left: 4px; }
+  .society-count {
+    margin-left: auto;
+    font-size: 0.72rem;
+    opacity: 0.6;
+    background: rgba(0,0,0,0.08);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .society-chevron {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    transition: transform 0.2s;
+  }
+  .society-block.collapsed .society-chevron { transform: rotate(-90deg); }
+
+  .society-body {
+    padding: 0.75rem;
+  }
+  .society-block.collapsed .society-body { display: none; }
+
+  /* Society-specific colors */
+  .society-block.ComSoc .society-header { background: var(--comsoc-header); color: var(--comsoc-accent); }
+  .society-block.ComSoc .society-count  { background: rgba(0,87,168,0.12); }
+  .society-block.VTS    .society-header { background: var(--vts-header);    color: var(--vts-accent);    }
+  .society-block.ITSS   .society-header { background: var(--itss-header);   color: var(--itss-accent);   }
+  .society-block.CTSoc  .society-header { background: var(--ctsoc-header);  color: var(--ctsoc-accent);  }
+  .society-block.IoT    .society-header { background: var(--iot-header);    color: var(--iot-accent);    }
+  .society-block.Other  .society-header { background: var(--other-header);  color: var(--other-accent);  }
+
+  .society-block.ComSoc { border-color: var(--comsoc-accent); border-opacity: 0.3; }
+  .society-block.VTS    { border-color: var(--vts-accent); }
+  .society-block.ITSS   { border-color: var(--itss-accent); }
+  .society-block.CTSoc  { border-color: var(--ctsoc-accent); }
+  .society-block.IoT    { border-color: var(--iot-accent); }
+  .society-block.Other  { border-color: var(--other-accent); }
+
+  /* ── Card Grid ── */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px;
   }
+
   .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1rem 1.25rem;
+    padding: 0.9rem 1.1rem;
     transition: border-color 0.15s, transform 0.1s;
     border-left: 3px solid transparent;
-    cursor: default;
   }
   .card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
-  .card.urgent  { border-left-color: #e24b4a; }
-  .card.soon    { border-left-color: #ef9f27; }
-  .card.ok      { border-left-color: #1d9e75; }
-  .card.passed  { border-left-color: #b4b2a9; opacity: 0.6; }
+  .card.urgent { border-left-color: #e24b4a; }
+  .card.soon   { border-left-color: #ef9f27; }
+  .card.ok     { border-left-color: #1d9e75; }
+  .card.passed { border-left-color: #b4b2a9; opacity: 0.6; }
 
-  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
-  .conf-abbr { font-size: 1rem; font-weight: 600; }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 5px; }
+  .conf-abbr { font-size: 0.97rem; font-weight: 700; }
   .conf-abbr a { color: var(--info-text); text-decoration: none; }
   .conf-abbr a:hover { text-decoration: underline; }
 
   .badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    font-size: 0.68rem; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
   }
-  .badge.urgent  { background: var(--urgent-bg);  color: var(--urgent-text);  }
-  .badge.soon    { background: var(--soon-bg);    color: var(--soon-text);    }
-  .badge.ok      { background: var(--ok-bg);      color: var(--ok-text);      }
-  .badge.passed  { background: var(--passed-bg);  color: var(--passed-text);  }
+  .badge.urgent { background: var(--urgent-bg); color: var(--urgent-text); }
+  .badge.soon   { background: var(--soon-bg);   color: var(--soon-text);   }
+  .badge.ok     { background: var(--ok-bg);     color: var(--ok-text);     }
+  .badge.passed { background: var(--passed-bg); color: var(--passed-text); }
 
-  .conf-full { font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; line-height: 1.45; }
+  .conf-full { font-size: 0.76rem; color: var(--muted); margin-bottom: 8px; line-height: 1.45; }
   .area-tag {
     display: inline-block;
-    font-size: 0.7rem;
-    padding: 2px 8px;
+    font-size: 0.68rem; padding: 2px 7px;
     border-radius: 4px;
-    background: var(--info-bg);
-    color: var(--info-text);
-    margin-bottom: 10px;
+    background: var(--info-bg); color: var(--info-text);
+    margin-bottom: 9px;
   }
 
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .info-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
-  .info-value { font-size: 0.82rem; color: var(--text); }
-  .info-value.highlight { font-weight: 600; }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .info-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 1px; }
+  .info-value { font-size: 0.8rem; color: var(--text); }
+  .info-value.highlight { font-weight: 700; }
 
-  .empty { text-align: center; padding: 4rem; color: var(--muted); font-size: 0.9rem; }
+  .empty   { text-align: center; padding: 3rem; color: var(--muted); font-size: 0.88rem; }
   .loading { text-align: center; padding: 4rem; color: var(--muted); }
 
   .error-box {
-    background: var(--urgent-bg);
-    color: var(--urgent-text);
+    background: var(--urgent-bg); color: var(--urgent-text);
     border-radius: var(--radius);
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.85rem;
+    padding: 1rem; margin-bottom: 1.5rem; font-size: 0.84rem;
   }
 
-  footer { margin-top: 3rem; text-align: center; font-size: 0.75rem; color: var(--muted); }
+  footer { margin-top: 3rem; text-align: center; font-size: 0.73rem; color: var(--muted); }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>IEEE 国際会議開催情報の追跡</h1>
-    <p>会議名をクリックすると公式サイトへ移動 · 締切状況は色で表示</p>
+    <h1>IEEE 国際会議 開催情報の追跡</h1>
+    <p>会議名をクリックすると公式サイトへ移動 · 締切状況は色で表示 · 学会ごとにグループ化</p>
     <div class="updated" id="updated-time"></div>
   </header>
 
@@ -201,24 +307,77 @@
   </div>
 
   <div id="error-area"></div>
-  <div class="grid" id="grid">
+  <div id="main">
     <div class="loading">読み込み中…</div>
   </div>
 
-  <footer>データ: WikiCFP · 毎週自動更新 · <a href="https://github.com/YOUR_USERNAME/conf-tracker" style="color:var(--muted)">GitHub</a></footer>
+  <footer>
+    データ: conferences.override.json（手動管理）· 毎週自動更新 ·
+    <a href="https://github.com/YOUR_USERNAME/conf-tracker" style="color:var(--muted)">GitHub</a>
+  </footer>
 </div>
 
 <script>
+// ─── Society 定義 ─────────────────────────────────────────────
+const SOCIETIES = [
+  {
+    key: 'ComSoc',
+    label: 'IEEE Communications Society',
+    abbr: 'ComSoc',
+    dot: '#0057a8',
+    url: 'https://www.comsoc.org',
+  },
+  {
+    key: 'VTS',
+    label: 'IEEE Vehicular Technology Society',
+    abbr: 'VTS',
+    dot: '#c4420a',
+    url: 'https://vtsociety.org',
+  },
+  {
+    key: 'ITSS',
+    label: 'IEEE Intelligent Transportation Systems Society',
+    abbr: 'ITSS',
+    dot: '#1a7f3e',
+    url: 'https://ieee-itss.org',
+  },
+  {
+    key: 'CTSoc',
+    label: 'IEEE Consumer Technology Society',
+    abbr: 'CTSoc',
+    dot: '#7c2fa8',
+    url: 'https://ctsoc.ieee.org',
+  },
+  {
+    key: 'IoT',
+    label: 'IEEE IoT Technical Community',
+    abbr: 'IoT Initiative',
+    dot: '#b07800',
+    url: 'https://iot.ieee.org',
+  },
+  {
+    key: 'Other',
+    label: 'その他 / 非 IEEE',
+    abbr: 'Other',
+    dot: '#888780',
+    url: null,
+  },
+];
+
+// collapsed 状態を保持
+const collapsedState = {};
+
+// ─── データ ──────────────────────────────────────────────────
 let DATA = [];
 let currentFilter = 'all';
 
 function getStatus(deadlineStr) {
-  if (!deadlineStr || deadlineStr === 'TBD') return { cls: 'ok', label: '日程未定', days: 9999 };
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  if (!deadlineStr || deadlineStr === 'TBD')
+    return { cls: 'ok', label: '日程未定', days: 9999 };
+  const today = new Date(); today.setHours(0,0,0,0);
   const dl = new Date(deadlineStr);
   const days = Math.ceil((dl - today) / 86400000);
-  if (days < 0)  return { cls: 'passed', label: '締切済み', days };
+  if (days < 0)   return { cls: 'passed', label: '締切済み', days };
   if (days <= 30) return { cls: 'urgent', label: `${days}日後に締切`, days };
   if (days <= 90) return { cls: 'soon',   label: `${days}日後に締切`, days };
   return { cls: 'ok', label: `${days}日後`, days };
@@ -238,62 +397,112 @@ function fmtRange(s, e) {
   return `${sd.getFullYear()}.${sd.getMonth()+1}.${sd.getDate()} – ${ed.getMonth()+1}.${ed.getDate()}`;
 }
 
+function cardHTML(c) {
+  const st = getStatus(c.deadline);
+  return `
+  <div class="card ${st.cls}">
+    <div class="card-head">
+      <div class="conf-abbr"><a href="${c.url||'#'}" target="_blank" rel="noopener">${c.abbr}</a></div>
+      <span class="badge ${st.cls}">${st.label}</span>
+    </div>
+    <div class="conf-full">${c.full || ''}</div>
+    ${c.area ? `<span class="area-tag">${c.area}</span>` : ''}
+    <div class="info-grid">
+      <div>
+        <div class="info-label">開催期間</div>
+        <div class="info-value">${fmtRange(c.confDate, c.confDateEnd)}</div>
+      </div>
+      <div>
+        <div class="info-label">開催地</div>
+        <div class="info-value">${c.location || 'TBD'}</div>
+      </div>
+      <div>
+        <div class="info-label">投稿締切</div>
+        <div class="info-value highlight">${fmt(c.deadline)}</div>
+      </div>
+      <div>
+        <div class="info-label">採否通知</div>
+        <div class="info-value">${fmt(c.notification)}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
 function render() {
-  const q = (document.getElementById('search').value || '').toLowerCase();
+  const q    = (document.getElementById('search').value || '').toLowerCase();
   const sort = document.getElementById('sort').value;
 
-  let data = DATA.filter(c => {
+  // フィルタ & 検索
+  const filtered = DATA.filter(c => {
     const st = getStatus(c.deadline);
     const matchFilter = currentFilter === 'all' || st.cls === currentFilter;
-    const matchSearch = !q || c.abbr.toLowerCase().includes(q) || (c.full||'').toLowerCase().includes(q) || (c.area||'').toLowerCase().includes(q);
+    const matchSearch = !q
+      || c.abbr.toLowerCase().includes(q)
+      || (c.full||'').toLowerCase().includes(q)
+      || (c.area||'').toLowerCase().includes(q);
     return matchFilter && matchSearch;
   });
 
-  data.sort((a, b) => {
-    if (sort === 'deadline') return (getStatus(a.deadline).days) - (getStatus(b.deadline).days);
+  // ソート
+  filtered.sort((a, b) => {
+    if (sort === 'deadline') return getStatus(a.deadline).days - getStatus(b.deadline).days;
     if (sort === 'conf')     return new Date(a.confDate||'9999') - new Date(b.confDate||'9999');
     if (sort === 'name')     return (a.abbr||'').localeCompare(b.abbr||'');
     return 0;
   });
 
-  const grid = document.getElementById('grid');
-  if (!data.length) {
-    grid.innerHTML = '<div class="empty">条件に合う会議がありません</div>';
+  const main = document.getElementById('main');
+
+  if (!filtered.length) {
+    main.innerHTML = '<div class="empty">条件に合う会議がありません</div>';
     return;
   }
 
-  grid.innerHTML = data.map(c => {
-    const st = getStatus(c.deadline);
-    return `
-    <div class="card ${st.cls}">
-      <div class="card-head">
-        <div class="conf-abbr"><a href="${c.url||'#'}" target="_blank" rel="noopener">${c.abbr}</a></div>
-        <span class="badge ${st.cls}">${st.label}</span>
+  // Society ごとにグループ化
+  const byKey = {};
+  filtered.forEach(c => {
+    const key = c.society || 'Other';
+    if (!byKey[key]) byKey[key] = [];
+    byKey[key].push(c);
+  });
+
+  let html = '';
+  SOCIETIES.forEach(soc => {
+    const confs = byKey[soc.key];
+    if (!confs || confs.length === 0) return;
+
+    const isCollapsed = collapsedState[soc.key] ? 'collapsed' : '';
+    const titleLink = soc.url
+      ? `<a href="${soc.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${soc.label}</a>`
+      : soc.label;
+
+    html += `
+    <div class="society-block ${soc.key} ${isCollapsed}" id="block-${soc.key}">
+      <div class="society-header" onclick="toggleBlock('${soc.key}')">
+        <span class="society-dot" style="background:${soc.dot}"></span>
+        <span class="society-title">${titleLink}</span>
+        <span class="society-subtitle">(${soc.abbr})</span>
+        <span class="society-count">${confs.length} 件</span>
+        <span class="society-chevron">▼</span>
       </div>
-      <div class="conf-full">${c.full || ''}</div>
-      ${c.area ? `<span class="area-tag">${c.area}</span>` : ''}
-      <div class="info-grid">
-        <div>
-          <div class="info-label">開催期間</div>
-          <div class="info-value">${fmtRange(c.confDate, c.confDateEnd)}</div>
-        </div>
-        <div>
-          <div class="info-label">開催地</div>
-          <div class="info-value">${c.location || 'TBD'}</div>
-        </div>
-        <div>
-          <div class="info-label">投稿締切</div>
-          <div class="info-value highlight">${fmt(c.deadline)}</div>
-        </div>
-        <div>
-          <div class="info-label">採否通知</div>
-          <div class="info-value">${fmt(c.notification)}</div>
+      <div class="society-body">
+        <div class="grid">
+          ${confs.map(cardHTML).join('')}
         </div>
       </div>
     </div>`;
-  }).join('');
+  });
+
+  main.innerHTML = html || '<div class="empty">条件に合う会議がありません</div>';
 }
 
+function toggleBlock(key) {
+  collapsedState[key] = !collapsedState[key];
+  const block = document.getElementById('block-' + key);
+  if (block) block.classList.toggle('collapsed', !!collapsedState[key]);
+}
+
+// フィルタボタン
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -303,7 +512,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-// Load data from conferences.json
+// ── データ読み込み ──────────────────────────────────────────
 fetch('conferences.json')
   .then(r => {
     if (!r.ok) throw new Error('conferences.json の読み込みに失敗しました');
@@ -313,13 +522,15 @@ fetch('conferences.json')
     DATA = json.conferences || json;
     const updatedAt = json.updated_at;
     if (updatedAt) {
-      document.getElementById('updated-time').textContent = `最終更新: ${new Date(updatedAt).toLocaleString('ja-JP')}`;
+      document.getElementById('updated-time').textContent =
+        `最終更新: ${new Date(updatedAt).toLocaleString('ja-JP')}`;
     }
     render();
   })
   .catch(err => {
-    document.getElementById('error-area').innerHTML = `<div class="error-box">エラー: ${err.message}</div>`;
-    document.getElementById('grid').innerHTML = '';
+    document.getElementById('error-area').innerHTML =
+      `<div class="error-box">エラー: ${err.message}</div>`;
+    document.getElementById('main').innerHTML = '';
   });
 </script>
 </body>
