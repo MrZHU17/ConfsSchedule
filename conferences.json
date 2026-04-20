@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-20T09:28:47.841449+00:00",
+  "updated_at": "2026-04-20T09:41:47.342541+00:00",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
@@ -12,7 +12,7 @@
       "deadline": "2026-05-03",
       "notification": "2026-08-01",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE WCNC",
@@ -25,7 +25,7 @@
       "deadline": "2025-10-26",
       "notification": "2026-01-11",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE ICC",
@@ -38,7 +38,7 @@
       "deadline": "2025-10-31",
       "notification": null,
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE INFOCOM",
@@ -51,7 +51,7 @@
       "deadline": "2025-07-31",
       "notification": "2025-12-08",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE VTC",
@@ -64,7 +64,7 @@
       "deadline": "2026-03-21",
       "notification": "2026-05-02",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE VTS Asia Pacific Wireless Communications Symposium (APWCS)",
@@ -77,7 +77,7 @@
       "deadline": "2026-06-01",
       "notification": "2026-06-29",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE PIMRC",
@@ -90,7 +90,7 @@
       "deadline": "2026-02-15",
       "notification": "2026-02-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE IV",
@@ -103,7 +103,7 @@
       "deadline": "2026-11-15",
       "notification": "2027-01-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE ITSC",
@@ -116,7 +116,7 @@
       "deadline": "2026-03-15",
       "notification": "2026-05-01",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE VNC",
@@ -129,7 +129,7 @@
       "deadline": "2026-02-13",
       "notification": "2026-03-20",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "ITS World Congress",
@@ -142,7 +142,7 @@
       "deadline": null,
       "notification": null,
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE GCCE",
@@ -155,7 +155,7 @@
       "deadline": "2026-05-11",
       "notification": "2026-03-09",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE WF-IoT",
@@ -168,7 +168,7 @@
       "deadline": "2026-05-15",
       "notification": "2026-05-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE CCNC",
@@ -181,7 +181,7 @@
       "deadline": "2026-07-01",
       "notification": "2026-07-31",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "IEEE Communication Theory Workshop (CTW)",
@@ -194,7 +194,7 @@
       "deadline": "2026-03-10",
       "notification": "2026-03-10",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "Asia-Pacific Conference on Communications (APCC)",
@@ -207,7 +207,7 @@
       "deadline": "2026-06-30",
       "notification": "2026-07-30",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "International Conference on Information Networking (ICOIN)",
@@ -220,7 +220,7 @@
       "deadline": "2025-10-24",
       "notification": "2025-11-24",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "International Symposium on Wireless Personal Multimedia Communications (WPMC)",
@@ -233,7 +233,7 @@
       "deadline": "2026-07-03",
       "notification": "2026-08-21",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "International Conference on Emerging Technologies for Communications (ICETC)",
@@ -246,7 +246,7 @@
       "deadline": "2026-06-01",
       "notification": "2026-08-30",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     },
     {
       "abbr": "International Conference on Computing, Networking and Communication (ICNC)",
@@ -259,7 +259,7 @@
       "deadline": "2026-08-15",
       "notification": "2026-11-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:28:47.841449+00:00"
+      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
     }
   ]
 }
