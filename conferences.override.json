@@ -170,6 +170,18 @@
     "confDateEnd": "2027-01-12",
     "location": "Las Vegas, NV, USA"
   },
+  
+  "IEEE International Conference on Consumer Electronics (ICCE) ": {
+  "society": "CTSoc",
+  "full": "IEEE Consumer Communications and Networking Conference",
+  "area": "Consumer / Networking",
+  "url": "https://icce.org/2027/",
+  "deadline": "2026-08-15",
+  "notification": "2026-10-31",
+  "confDate": "2027-01-08",
+  "confDateEnd": "2027-01-11",
+  "location": "Las Vegas, NV, USA"
+  },
 
   "IEEE Communication Theory Workshop (CTW)": {
     "society": "ComSoc",
