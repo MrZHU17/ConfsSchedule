@@ -1,8 +1,9 @@
 {
-  "updated_at": "2026-04-20T09:41:47.342541+00:00",
+  "updated_at": "2026-04-20T09:43:54.531342+00:00",
   "conferences": [
     {
       "abbr": "IEEE GLOBECOM",
+      "society": "ComSoc",
       "full": "IEEE Global Communications Conference",
       "area": "Communications",
       "url": "https://globecom2026.ieee-globecom.org",
@@ -12,10 +13,11 @@
       "deadline": "2026-05-03",
       "notification": "2026-08-01",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE WCNC",
+      "society": "ComSoc",
       "full": "IEEE Wireless Communications and Networking Conference",
       "area": "Wireless",
       "url": "https://wcnc2026.ieee-wcnc.org",
@@ -25,10 +27,11 @@
       "deadline": "2025-10-26",
       "notification": "2026-01-11",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE ICC",
+      "society": "ComSoc",
       "full": "IEEE International Conference on Communications",
       "area": "Communications",
       "url": "https://icc2026.ieee-icc.org",
@@ -38,10 +41,11 @@
       "deadline": "2025-10-31",
       "notification": null,
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE INFOCOM",
+      "society": "ComSoc",
       "full": "IEEE International Conference on Computer Communications",
       "area": "Networking",
       "url": "https://infocom2026.ieee-infocom.org",
@@ -51,10 +55,11 @@
       "deadline": "2025-07-31",
       "notification": "2025-12-08",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE VTC",
+      "society": "VTS",
       "full": "IEEE Vehicular Technology Conference",
       "area": "V2X / 5G / IoT",
       "url": "https://events.vtsociety.org/vtc2026-fall",
@@ -64,10 +69,11 @@
       "deadline": "2026-03-21",
       "notification": "2026-05-02",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE VTS Asia Pacific Wireless Communications Symposium (APWCS)",
+      "society": "VTS",
       "full": "IEEE Vehicular Technology Conference",
       "area": "V2X / 5G / IoT",
       "url": "https://apwcs2026.org/index.html",
@@ -77,10 +83,11 @@
       "deadline": "2026-06-01",
       "notification": "2026-06-29",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE PIMRC",
+      "society": "ComSoc",
       "full": "IEEE Int. Symposium on Personal, Indoor and Mobile Radio Communications",
       "area": "Wireless",
       "url": "https://pimrc2026.ieee-pimrc.org",
@@ -90,10 +97,11 @@
       "deadline": "2026-02-15",
       "notification": "2026-02-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE IV",
+      "society": "ITSS",
       "full": "IEEE Intelligent Vehicles Symposium",
       "area": "ITS / V2X",
       "url": "https://ieee-iv.org/2027/",
@@ -103,10 +111,11 @@
       "deadline": "2026-11-15",
       "notification": "2027-01-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE ITSC",
+      "society": "ITSS",
       "full": "IEEE Int. Conference on Intelligent Transportation Systems",
       "area": "ITS",
       "url": "https://ieee-itsc.org/2026",
@@ -116,10 +125,11 @@
       "deadline": "2026-03-15",
       "notification": "2026-05-01",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE VNC",
+      "society": "ITSS",
       "full": "IEEE Vehicular Networking Conference",
       "area": "V2X / Networking",
       "url": "https://vnc2026.ieee-vnc.org",
@@ -129,10 +139,11 @@
       "deadline": "2026-02-13",
       "notification": "2026-03-20",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "ITS World Congress",
+      "society": "Other",
       "full": "ITS World Congress",
       "area": "ITS",
       "url": "https://2026itsworldcongress.org",
@@ -142,10 +153,11 @@
       "deadline": null,
       "notification": null,
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE GCCE",
+      "society": "CTSoc",
       "full": "IEEE Global Conference on Consumer Electronics",
       "area": "Consumer Electronics",
       "url": "https://www.ieee-gcce.org/2026",
@@ -155,10 +167,11 @@
       "deadline": "2026-05-11",
       "notification": "2026-03-09",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE WF-IoT",
+      "society": "Other",
       "full": "IEEE World Forum on Internet of Things",
       "area": "IoT",
       "url": "https://wfiot2026.iot.ieee.org",
@@ -168,10 +181,11 @@
       "deadline": "2026-05-15",
       "notification": "2026-05-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE CCNC",
+      "society": "CTSoc",
       "full": "IEEE Consumer Communications and Networking Conference",
       "area": "Consumer / Networking",
       "url": "https://ccnc2027.ieee-ccnc.org",
@@ -181,10 +195,11 @@
       "deadline": "2026-07-01",
       "notification": "2026-07-31",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "IEEE Communication Theory Workshop (CTW)",
+      "society": "ComSoc",
       "full": "IEEE Communication Theory Workshop",
       "area": "Theory",
       "url": "https://ctw2026.ieee-ctw.org",
@@ -194,10 +209,11 @@
       "deadline": "2026-03-10",
       "notification": "2026-03-10",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "Asia-Pacific Conference on Communications (APCC)",
+      "society": "Other",
       "full": "Asia-Pacific Conference on Communications",
       "area": "Asia-Pacific",
       "url": "https://apcc2026.org",
@@ -207,10 +223,11 @@
       "deadline": "2026-06-30",
       "notification": "2026-07-30",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "International Conference on Information Networking (ICOIN)",
+      "society": "Computer Society",
       "full": "International Conference on Information Networking",
       "area": "Networking",
       "url": "https://www.icoin.org",
@@ -220,10 +237,11 @@
       "deadline": "2025-10-24",
       "notification": "2025-11-24",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "International Symposium on Wireless Personal Multimedia Communications (WPMC)",
+      "society": "Other",
       "full": "Int. Symposium on Wireless Personal Multimedia Communications",
       "area": "Wireless",
       "url": "https://wpmc.imd.ufrn.br/",
@@ -233,10 +251,11 @@
       "deadline": "2026-07-03",
       "notification": "2026-08-21",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "International Conference on Emerging Technologies for Communications (ICETC)",
+      "society": "Other",
       "full": "Int. Conference on Emerging Technologies for Communications",
       "area": "Emerging Tech",
       "url": "https://www.ieice.org/cs/icetc/2026",
@@ -246,10 +265,11 @@
       "deadline": "2026-06-01",
       "notification": "2026-08-30",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     },
     {
       "abbr": "International Conference on Computing, Networking and Communication (ICNC)",
+      "society": "ComSoc",
       "full": "Int. Conference on Computing, Networking and Communications",
       "area": "Networking",
       "url": "https://www.conf-icnc.org/2027",
@@ -259,7 +279,7 @@
       "deadline": "2026-08-15",
       "notification": "2026-11-15",
       "data_source": "manual",
-      "fetched_at": "2026-04-20T09:41:47.342541+00:00"
+      "fetched_at": "2026-04-20T09:43:54.531342+00:00"
     }
   ]
 }
